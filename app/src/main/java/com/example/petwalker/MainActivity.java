@@ -1,6 +1,8 @@
 package com.example.petwalker;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.widget.EditText;
 import android.text.Editable;
 import android.widget.Button;
@@ -11,6 +13,8 @@ import android.content.Intent;
 
 public class MainActivity extends AppCompatActivity {
 
+    String msg = "FYP: ";
+
     private EditText userNameInput;
     private EditText userAgeInput;
     private Button startButton;
@@ -19,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(msg, "onCreate() event");
 
         userNameInput = findViewById(R.id.user_name_input);
         userAgeInput = findViewById(R.id.user_age_input);
@@ -76,5 +81,35 @@ public class MainActivity extends AppCompatActivity {
         String userNameInputText = userNameInput.getText().toString().trim();
         String userAgeInputText = userAgeInput.getText().toString().trim();
         startButton.setEnabled(!userNameInputText.isEmpty() && !userAgeInputText.isEmpty());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(msg, "onStart() event");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(msg, "onResume() event");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(msg, "onPause() event");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(msg, "onStop() event");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(msg, "onDestroy() event");
     }
 }

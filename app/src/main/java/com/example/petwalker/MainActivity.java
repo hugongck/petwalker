@@ -21,8 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private EditText userNameInput;
-    private EditText userAgeInput;
-    private Button startButton;
+    private EditText userPwInput;
+    private Button createButton;
     private Button loginButton;
 
     @Override
@@ -35,32 +35,34 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         userNameInput = findViewById(R.id.user_name_input);
-        userAgeInput = findViewById(R.id.user_age_input);
-        startButton = findViewById(R.id.start_button);
+        userPwInput = findViewById(R.id.user_age_input);
+        createButton = findViewById(R.id.start_button);
         loginButton = findViewById(R.id.login_button);
 
         // Adding onClickListener to start button
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = userNameInput.getText().toString();
-                String age = userAgeInput.getText().toString();
+        createButton.setOnClickListener(view -> {
+            String email = userNameInput.getText().toString().trim();
+            String password = userPwInput.getText().toString().trim();
 
-
-
-                // Saving user input data in shared preference or database
-                //saveUserData(name, age);
-
-                // creating new Intent and starting next activity
-                Intent intent = new Intent(MainActivity.this, Dashboard.class);
-                startActivity(intent);
-            }
+            // Call createUserWithEmailAndPassword() with the user's email and password
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign up success
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            // Do something with the signed-up user
+                            Toast.makeText(MainActivity.this, "Account created successfully.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Sign up failed
+                            Toast.makeText(MainActivity.this, "Account creation failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
 
         // Set click listener for the login button
         loginButton.setOnClickListener(view -> {
             String email = userNameInput.getText().toString().trim();
-            String password = userAgeInput.getText().toString().trim();
+            String password = userPwInput.getText().toString().trim();
 
             // Call signInWithEmailAndPassword() with the user's email and password
             mAuth.signInWithEmailAndPassword(email, password)
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        userAgeInput.addTextChangedListener(new TextWatcher() {
+        userPwInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
@@ -116,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkInputs() {
         String userNameInputText = userNameInput.getText().toString().trim();
-        String userAgeInputText = userAgeInput.getText().toString().trim();
-        startButton.setEnabled(!userNameInputText.isEmpty() && !userAgeInputText.isEmpty());
+        String userAgeInputText = userPwInput.getText().toString().trim();
+        createButton.setEnabled(!userNameInputText.isEmpty() && !userAgeInputText.isEmpty());
     }
 
     @Override

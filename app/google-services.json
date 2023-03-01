@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "307631783486",
+    "project_id": "fyp-2023-fad2a",
+    "storage_bucket": "fyp-2023-fad2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307631783486:android:17f045fce2a86917eb1b6f",
+        "android_client_info": {
+          "package_name": "com.example.petwalker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "307631783486-9fjfdm34p85kpof1h2vpor114ri5ebb5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzUSEO5moUPPH8PqW9BoujC-jq7LVjsIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "307631783486-9fjfdm34p85kpof1h2vpor114ri5ebb5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

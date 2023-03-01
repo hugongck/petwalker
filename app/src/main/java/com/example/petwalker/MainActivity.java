@@ -10,14 +10,20 @@ import android.text.TextWatcher;
 import android.os.Bundle;
 import android.view.View;
 import android.content.Intent;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
     String msg = "FYP: ";
 
+    private FirebaseAuth mAuth;
     private EditText userNameInput;
     private EditText userAgeInput;
     private Button startButton;
+    private Button loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +31,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.d(msg, "onCreate() event");
 
+        // Initialize Firebase Authentication
+        mAuth = FirebaseAuth.getInstance();
+
         userNameInput = findViewById(R.id.user_name_input);
         userAgeInput = findViewById(R.id.user_age_input);
         startButton = findViewById(R.id.start_button);
+        loginButton = findViewById(R.id.login_button);
 
         // Adding onClickListener to start button
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -35,13 +45,40 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String name = userNameInput.getText().toString();
                 String age = userAgeInput.getText().toString();
-                // Saving user input data in sharedpreference or database
+
+
+
+                // Saving user input data in shared preference or database
                 //saveUserData(name, age);
 
                 // creating new Intent and starting next activity
                 Intent intent = new Intent(MainActivity.this, Dashboard.class);
                 startActivity(intent);
             }
+        });
+
+        // Set click listener for the login button
+        loginButton.setOnClickListener(view -> {
+            String email = userNameInput.getText().toString().trim();
+            String password = userAgeInput.getText().toString().trim();
+
+            // Call signInWithEmailAndPassword() with the user's email and password
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            // Do something with the signed-in user
+                            Toast.makeText(MainActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
+
+                            // creating new Intent and starting next activity
+                            Intent intent = new Intent(MainActivity.this, Dashboard.class);
+                            startActivity(intent);
+                        } else {
+                            // Sign in failed
+                            Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
 
         //private void saveUserData(String name, String age) {

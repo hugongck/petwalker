@@ -13,14 +13,10 @@
         android:theme="@style/Theme.Petwalker"
         tools:targetApi="31">
         <activity
-            android:name=".StepCount"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".newUserEnterInfo"
+            android:exported="false" />
         <activity
-            android:name=".ePet"
+            android:name=".StepCount"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

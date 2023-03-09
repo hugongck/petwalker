@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         String userNameInputText = userNameInput.getText().toString().trim();
         String userAgeInputText = userPwInput.getText().toString().trim();
         createButton.setEnabled(!userNameInputText.isEmpty() && !userAgeInputText.isEmpty());
+        loginButton.setEnabled(!userNameInputText.isEmpty() && !userAgeInputText.isEmpty());
     }
 
     @Override

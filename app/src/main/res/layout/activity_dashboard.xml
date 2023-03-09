@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+        android:id="@+id/constraintLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
@@ -31,15 +31,31 @@
             android:id="@+id/btn_help"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/help_center_48px"
-            app:backgroundTint="#000000"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/help_btn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_below="@id/constraintLayout1">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@color/black"
+            app:srcCompat="@drawable/banner" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -49,17 +65,11 @@
         android:layout_below="@id/constraintLayout2">
 
         <LinearLayout
+            android:id="@+id/margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@color/black"
-                app:srcCompat="@drawable/logo" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout3"
@@ -74,7 +84,7 @@
                     android:layout_height="0dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="12dp"
-                    android:background="@drawable/img_epet"
+                    android:background="@drawable/epet_btn"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toStartOf="@+id/btn_2"
                     app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +96,7 @@
                     android:layout_height="0dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/img_epet"
+                    android:background="@drawable/stepcount_btn"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/btn_1"
@@ -107,7 +117,7 @@
                     android:layout_height="0dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="12dp"
-                    android:background="@drawable/img_epet"
+                    android:background="@drawable/rewards_btn"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toStartOf="@+id/btn_4"
                     app:layout_constraintStart_toStartOf="parent"
@@ -119,7 +129,7 @@
                     android:layout_height="0dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/img_epet"
+                    android:background="@drawable/map_btn"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/btn_3"
@@ -130,7 +140,7 @@
                 android:id="@+id/constraintLayout5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="72dp"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <Button
@@ -139,7 +149,7 @@
                     android:layout_height="0dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="12dp"
-                    android:background="@drawable/img_epet"
+                    android:background="@drawable/healthreport_btn"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toStartOf="@+id/btn_6"
                     app:layout_constraintStart_toStartOf="parent"
@@ -151,7 +161,7 @@
                     android:layout_height="0dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/img_epet"
+                    android:background="@drawable/setting_btn"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/btn_5"
@@ -160,4 +170,5 @@
 
         </LinearLayout>
     </ScrollView>
+
 </RelativeLayout>

@@ -65,7 +65,10 @@
     <EditText
         android:id="@+id/editTextDate_birthday"
         android:layout_width="wrap_content"
+        android:minWidth="200dp"
         android:layout_height="wrap_content"
+        android:minHeight="32dp"
+        android:background="@color/white"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="date"
@@ -77,7 +80,10 @@
     <Spinner
         android:id="@+id/spinner_gender"
         android:layout_width="wrap_content"
+        android:minWidth="200dp"
         android:layout_height="wrap_content"
+        android:minHeight="32dp"
+        android:background="@color/white"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +92,10 @@
     <EditText
         android:id="@+id/editTextNumber_weight"
         android:layout_width="wrap_content"
+        android:minWidth="200dp"
         android:layout_height="wrap_content"
+        android:minHeight="32dp"
+        android:background="@color/white"
         android:layout_marginStart="18dp"
         android:layout_marginTop="16dp"
         android:ems="10"

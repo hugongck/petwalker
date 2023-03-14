@@ -7,16 +7,17 @@ import android.widget.ProgressBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+
 import android.os.Bundle;
 
-public class StepCount extends AppCompatActivity {
-
+public class epet extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_step_count);
+        setContentView(R.layout.activity_epet);
 
+        //return button
         Button btn_back = findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -26,8 +27,10 @@ public class StepCount extends AppCompatActivity {
         });
 
         //progress bar
-        ProgressBar progressBar = findViewById(R.id.circular_progress_bar);
+        ProgressBar progressBar = findViewById(R.id.horizontal_progress_bar);
         int progressValue = (int) ((float)1696/2000*100); // Set the progress value here
         progressBar.setProgress(progressValue);
+
     }
 }
+

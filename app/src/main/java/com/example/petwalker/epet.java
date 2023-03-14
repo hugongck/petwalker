@@ -17,6 +17,11 @@ public class epet extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_epet);
 
+        // Hide the status bar.
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
         //return button
         Button btn_back = findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {

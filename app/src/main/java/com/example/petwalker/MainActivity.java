@@ -31,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.d(msg, "onCreate() event");
 
+        // Hide the status bar.
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
 

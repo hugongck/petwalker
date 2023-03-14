@@ -94,19 +94,20 @@
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout8">
 
             <TextView
-                android:id="@+id/steps_txt"
+                android:id="@+id/total_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="steps"
+                android:text="/2000"
                 android:textColor="#000000"
-                android:textSize="40sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="28sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/walked_step" />
 
             <TextView
-                android:id="@+id/total_step"
+                android:id="@+id/walked_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-black"
@@ -117,6 +118,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/steps_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="steps"
+                android:textColor="#000000"
+                android:textSize="32sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/total_step" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

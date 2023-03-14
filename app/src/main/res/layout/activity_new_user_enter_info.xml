@@ -8,6 +8,36 @@
     tools:context=".newUserEnterInfo">
 
     <TextView
+        android:id="@+id/TextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:background="#FFF"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:text="Tell us a little bit about yourself"
+        android:textAlignment="center"
+        android:textColor="#202020"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/imageView3"
+        android:enabled="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/TextView"
+        app:layout_constraintHeight_max="30dp"
+        app:layout_constraintStart_toStartOf="@+id/TextView"
+        app:layout_constraintTop_toTopOf="@+id/TextView"
+        app:layout_constraintWidth_max="30dp"
+        android:background="@drawable/arrow_back_48px"/>
+
+    <TextView
         android:id="@+id/ageQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,50 +48,7 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ageQuestion3" />
-
-    <TextView
-        android:id="@+id/ageQuestion3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:background="#FFF"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="Tell us a little bit about yourself.."
-        android:textAlignment="center"
-        android:textColor="#202020"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/genderQuestion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:fontFamily="sans-serif-black"
-        android:text="What's your gender?"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDate_birthday" />
-
-    <TextView
-        android:id="@+id/currentWeightQuestion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:fontFamily="sans-serif-black"
-        android:text="What's your current weight?"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
-
+        app:layout_constraintTop_toBottomOf="@+id/TextView" />
     <EditText
         android:id="@+id/editTextDate_birthday"
         android:layout_width="wrap_content"
@@ -77,6 +64,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ageQuestion" />
 
+    <TextView
+        android:id="@+id/genderQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:fontFamily="sans-serif-black"
+        android:text="What's your gender?"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDate_birthday" />
     <Spinner
         android:id="@+id/spinner_gender"
         android:layout_width="wrap_content"
@@ -89,6 +88,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/genderQuestion" />
 
+    <TextView
+        android:id="@+id/currentWeightQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:fontFamily="sans-serif-black"
+        android:text="What's your current weight?"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
     <EditText
         android:id="@+id/editTextNumber_weight"
         android:layout_width="wrap_content"
@@ -104,6 +115,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentWeightQuestion" />
 
+
+
+
     <Button
         android:id="@+id/enter_button"
         android:layout_width="wrap_content"
@@ -117,5 +131,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextNumber_weight" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

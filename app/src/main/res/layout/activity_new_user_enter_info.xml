@@ -4,25 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
-=======
     android:background="#202020"
->>>>>>> Created new activity "newUserEnterInfo" for collecting new player's health info, i.e. B-day, gender, current weight.
     tools:context=".newUserEnterInfo">
 
     <TextView
         android:id="@+id/ageQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
-        android:layout_marginStart="9dp"
-        android:layout_marginTop="119dp"
-        android:layout_marginBottom="4dp"
-        android:text="What's your birthday?"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextDate_birthday"
-        app:layout_constraintStart_toStartOf="@+id/editTextDate_birthday"
-=======
         android:layout_marginTop="72dp"
         android:fontFamily="sans-serif-black"
         android:text="What's your birthday?"
@@ -46,47 +34,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
->>>>>>> Created new activity "newUserEnterInfo" for collecting new player's health info, i.e. B-day, gender, current weight.
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/genderQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
-        android:layout_marginStart="13dp"
-        android:layout_marginBottom="8dp"
-        android:text="What's your gender?"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/spinner_gender"
-        app:layout_constraintStart_toStartOf="@+id/spinner_gender"
-=======
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:fontFamily="sans-serif-black"
         android:text="What's your gender?"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
->>>>>>> Created new activity "newUserEnterInfo" for collecting new player's health info, i.e. B-day, gender, current weight.
         app:layout_constraintTop_toBottomOf="@+id/editTextDate_birthday" />
 
     <TextView
         android:id="@+id/currentWeightQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
-        android:layout_marginBottom="8dp"
-        android:text="What's your current weight?"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextNumber_weight"
-=======
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:fontFamily="sans-serif-black"
         android:text="What's your current weight?"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
->>>>>>> Created new activity "newUserEnterInfo" for collecting new player's health info, i.e. B-day, gender, current weight.
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
@@ -95,31 +66,19 @@
         android:id="@+id/editTextDate_birthday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
-        android:layout_marginBottom="52dp"
-        android:ems="10"
-        android:inputType="date"
-        app:layout_constraintBottom_toTopOf="@+id/genderQuestion"
-=======
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="date"
         android:textColor="#FFFFFF"
->>>>>>> Created new activity "newUserEnterInfo" for collecting new player's health info, i.e. B-day, gender, current weight.
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ageQuestion" />
 
     <Spinner
         android:id="@+id/spinner_gender"
-        android:layout_width="207dp"
-        android:layout_height="0dp"
-<<<<<<< HEAD
-        android:layout_marginBottom="37dp"
-        app:layout_constraintBottom_toTopOf="@+id/currentWeightQuestion"
-=======
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
->>>>>>> Created new activity "newUserEnterInfo" for collecting new player's health info, i.e. B-day, gender, current weight.
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/genderQuestion" />
@@ -128,20 +87,27 @@
         android:id="@+id/editTextNumber_weight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
         android:layout_marginStart="18dp"
-        android:layout_marginBottom="284dp"
-        android:ems="10"
-        android:inputType="numberDecimal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/currentWeightQuestion"
-=======
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="numberDecimal"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
->>>>>>> Created new activity "newUserEnterInfo" for collecting new player's health info, i.e. B-day, gender, current weight.
         app:layout_constraintTop_toBottomOf="@+id/currentWeightQuestion" />
+
+    <Button
+        android:id="@+id/enter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:enabled="false"
+        android:fontFamily="sans-serif-black"
+        android:text="    Let's start    "
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNumber_weight" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

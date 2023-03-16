@@ -117,7 +117,7 @@
             android:layout_height="32dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="64dp"
+            android:layout_marginBottom="32dp"
             android:max="100"
             android:progress="0"
             android:progressDrawable="@drawable/progress_bar_border"

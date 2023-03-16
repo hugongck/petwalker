@@ -9,7 +9,7 @@ import android.widget.Button;
 
 public class Dashboard extends AppCompatActivity {
 
-    private Button btn_ePet, btn_stepCount;
+    private Button btn_ePet, btn_stepCount, btn_map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +23,7 @@ public class Dashboard extends AppCompatActivity {
 
         btn_ePet = findViewById(R.id.btn_1);
         btn_stepCount = findViewById(R.id.btn_2);
+        btn_map = findViewById(R.id.btn_4);
 
         btn_stepCount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,6 +36,13 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Dashboard.this, epet.class);
+                startActivity(intent);
+            }
+        });
+        btn_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Dashboard.this, Map.class);
                 startActivity(intent);
             }
         });

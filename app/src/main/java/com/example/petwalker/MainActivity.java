@@ -1,6 +1,7 @@
 package com.example.petwalker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.petwalker.User;
 
 import android.util.Log;
 import android.widget.EditText;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -20,10 +22,8 @@ public class MainActivity extends AppCompatActivity {
     String msg = "FYP: ";
 
     private FirebaseAuth mAuth;
-    private EditText userNameInput;
-    private EditText userPwInput;
-    private Button createButton;
-    private Button loginButton;
+    private EditText userNameInput, userPwInput;
+    private Button createButton, loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Adding onClickListener to start button
         createButton.setOnClickListener(view -> {
-            String email = userNameInput.getText().toString().trim();
+            String email = userNameInput.getText().toString().trim() + "@petwalker.fyp";
             String password = userPwInput.getText().toString().trim();
 
             // Call createUserWithEmailAndPassword() with the user's email and password
@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             // Do something with the signed-up user
                             Toast.makeText(MainActivity.this, "Account created successfully.", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(MainActivity.this, newUserEnterInfo.class);
+                            startActivity(intent);
                         } else {
                             // Sign up failed
                             Toast.makeText(MainActivity.this, "Account creation failed.", Toast.LENGTH_SHORT).show();
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set click listener for the login button
         loginButton.setOnClickListener(view -> {
-            String email = userNameInput.getText().toString().trim();
+            String email = userNameInput.getText().toString().trim() + "@petwalker.fyp";
             String password = userPwInput.getText().toString().trim();
 
             // Call signInWithEmailAndPassword() with the user's email and password
@@ -79,20 +81,14 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
 
                             // creating new Intent and starting next activity
-                            Intent intent = new Intent(MainActivity.this, Dashboard.class);
-                            startActivity(intent);
+                            Intent toDashboard = new Intent(MainActivity.this, Dashboard.class);
+                            startActivity(toDashboard);
                         } else {
                             // Sign in failed
                             Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                     });
         });
-
-        //private void saveUserData(String name, String age) {
-            // code to save data in shared preference or database
-
-        //}
-
 
         userNameInput.addTextChangedListener(new TextWatcher() {
             @Override

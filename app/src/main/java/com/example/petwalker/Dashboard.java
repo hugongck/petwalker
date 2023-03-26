@@ -64,4 +64,10 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        // do nothing or show an error message
+    }
+
 }

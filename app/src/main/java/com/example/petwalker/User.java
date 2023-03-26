@@ -6,24 +6,25 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class User {
-    public String name, email, birthday, gender;
+    public String userid, name, email, birthday, gender;
     public int age;
-    public float weight;
+    public double weight;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(com.example.petwalker.User.class)
     }
 
-    public User(String name, String gender, String birthday, float weight) {
+    public User(String userid, String name, String gender, String birthday, double weight) {
+        this.userid = userid;
         this.name = name;
-        this.email = name + "petwalker.fyp";
+        this.email = name + "@petwalker.fyp";
         this.gender = gender;
         this.birthday = birthday;
-        this.age = getAge();
+        this.age = 0;
         this.weight = weight;
     }
 
-    public int getAge() {
+    /*public int getAge() {
         // Parse the birthday string into a Date object
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date birthdayDate = null;
@@ -43,5 +44,5 @@ public class User {
         }
 
         return age;
-    }
+    }*/
 }

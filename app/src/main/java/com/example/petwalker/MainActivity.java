@@ -1,5 +1,6 @@
 package com.example.petwalker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.petwalker.User;
 
@@ -13,9 +14,14 @@ import android.view.View;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText userNameInput, userPwInput;
     private Button createButton, loginButton;
+
+    private DatabaseReference mDatabase, userRef, nextUserIdRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +46,21 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance("https://fyp-2023-fad2a-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+        userRef = mDatabase.child("users");
+        nextUserIdRef = mDatabase.child("nextUserId");
 
         userNameInput = findViewById(R.id.user_name_input);
         userPwInput = findViewById(R.id.user_age_input);
         createButton = findViewById(R.id.start_button);
         loginButton = findViewById(R.id.login_button);
 
+
+        //Create New User
         // Adding onClickListener to start button
         createButton.setOnClickListener(view -> {
-            String email = userNameInput.getText().toString().trim() + "@petwalker.fyp";
+            String username = userNameInput.getText().toString().trim();
+            String email = username + "@petwalker.fyp";
             String password = userPwInput.getText().toString().trim();
 
             // Call createUserWithEmailAndPassword() with the user's email and password
@@ -57,6 +71,28 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             // Do something with the signed-up user
                             Toast.makeText(MainActivity.this, "Account created successfully.", Toast.LENGTH_SHORT).show();
+
+                            // Retrieve the current value of "nextUserID" from the database
+                            nextUserIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    long nextUserID = dataSnapshot.getValue(Long.class);
+                                    // Use the current value of "nextUserID" as the ID for the new user
+                                    User newUser = new User(Long.toString(nextUserID), username, "n/a", "n/a", 0.0);
+                                    // Save the new user to the database
+                                    userRef.child(Long.toString(nextUserID)).setValue(newUser);
+
+                                    // Increment the value of "nextUserID" in the database by 1
+                                    nextUserIdRef.setValue(nextUserID + 1);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    // Handle any errors
+                                }
+                            });
+
+                            //jump to collect new user's info
                             Intent intent = new Intent(MainActivity.this, newUserEnterInfo.class);
                             startActivity(intent);
                         } else {
@@ -66,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     });
         });
 
+        //Login Current User
         // Set click listener for the login button
         loginButton.setOnClickListener(view -> {
             String email = userNameInput.getText().toString().trim() + "@petwalker.fyp";

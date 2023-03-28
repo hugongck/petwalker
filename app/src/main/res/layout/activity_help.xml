@@ -75,14 +75,14 @@
                 android:id="@+id/txt_epet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:background="@color/white"
-                android:text="Lorem ipsum dolor sit amet, coctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis. Lorem ipsum dolor sit amet, coctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis."
                 android:fontFamily="sans-serif-medium"
+                android:text="It is a virtual pet that users can adopt within the application. This pet is entirely digital and can be accessed through the user's device. By default, the E-pet will greet the user with a Good Morning message when they first open the app in the morning, followed by a Good Afternoon message in the afternoon, and a Good Night message in the evening according to user’s local time zone. This E-pet will also respond and have simple conversation with the user."
                 android:textColor="@color/black"
-                android:textSize="18dp"/>
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/title_stepcount"
@@ -105,14 +105,14 @@
                 android:id="@+id/txt_stepcount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:background="@color/white"
-                android:text="Lorem ipsum dolor sit amet, coctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis. Lorem ipsum dolor sit amet, coctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis."
                 android:fontFamily="sans-serif-medium"
+                android:text="This application records the user's step count using the device's built-in sensors. It uses a step counter sensor to detect whenever the user takes a step and updates the step count in real time. The step count allows users to easily track their progress and set goals for themselves. The app also calculates the total distance that the user has walked based on their step count and an estimated step length."
                 android:textColor="@color/black"
-                android:textSize="18dp"/>
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/title_map"
@@ -135,14 +135,14 @@
                 android:id="@+id/txt_map"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:background="@color/white"
-                android:text="Lorem ipsum dolor sit amet, coctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis. Lorem ipsum dolor sit amet, coctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis."
                 android:fontFamily="sans-serif-medium"
+                android:text="The Map page of this application provides users with a comprehensive view of their walking progress. The page displays a map of the user's current location, along with their step count, walking time, distance walked, and progress towards completing their walking tasks. "
                 android:textColor="@color/black"
-                android:textSize="18dp"/>
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/title_reward"
@@ -165,14 +165,14 @@
                 android:id="@+id/txt_reward"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:background="@color/white"
-                android:text="Lorem ipsum dolor sit amet, coctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis. Lorem ipsum dolor sit amet, coctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis."
                 android:fontFamily="sans-serif-medium"
+                android:text="In this application, users can get rewards in the form of coupons after completing walking tasks. This provides an incentive for users to stay active and motivated to achieve their fitness goals, also provides a way for users to save money while doing so. Users can view their rewards in the app and redeem them at stores that accept the coupons. "
                 android:textColor="@color/black"
-                android:textSize="18dp"/>
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/title_healthreport"
@@ -195,15 +195,15 @@
                 android:id="@+id/txt_healthreport"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="72dp"
                 android:background="@color/white"
-                android:text="Lorem ipsum dolor sit amet, coctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis. Lorem ipsum dolor sit amet, coctetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis."
                 android:fontFamily="sans-serif-medium"
+                android:text="The health report page of this application provides users with a comprehensive view of their physical activity levels, including information on the number of step counts, calories burned, walking distance, and other health-related data. One of the key features of the health report page is its ability to recommend the amount of exercise that is appropriate for the user based on their age and gender."
                 android:textColor="@color/black"
-                android:textSize="18dp"/>
+                android:textSize="18dp" />
 
         </LinearLayout>
 

@@ -33,6 +33,8 @@ public class Dashboard extends AppCompatActivity {
         Button btn_ePet = findViewById(R.id.btn_1);
         Button btn_stepCount = findViewById(R.id.btn_2);
         Button btn_map = findViewById(R.id.btn_3);
+        Button btn_rewards = findViewById(R.id.btn_4);
+        Button btn_healthreport = findViewById(R.id.btn_5);
         Button btn_setting = findViewById(R.id.btn_6);
 
         btn_stepCount.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +55,20 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Dashboard.this, Map.class);
+                startActivity(intent);
+            }
+        });
+        btn_rewards.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Dashboard.this, Rewards.class);
+                startActivity(intent);
+            }
+        });
+        btn_healthreport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Dashboard.this, HealthReport.class);
                 startActivity(intent);
             }
         });

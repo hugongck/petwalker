@@ -54,6 +54,7 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
             }
         });
 
+        //step count
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){ //ask for permission
             requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);

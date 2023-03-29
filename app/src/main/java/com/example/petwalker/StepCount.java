@@ -88,6 +88,10 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
         {
             stepCount = (int) sensorevent.values[0];
             textViewStepCounter.setText(String.valueOf(stepCount));
+            //progress bar
+            ProgressBar progressBar = findViewById(R.id.circular_progress_bar);
+            int progressValue = (int) ((float)stepCount/2000*100); // Set the progress value here
+            progressBar.setProgress(progressValue);
         }
     }
 

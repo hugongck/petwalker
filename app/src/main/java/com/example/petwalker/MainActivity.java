@@ -1,60 +1,56 @@
 package com.example.petwalker;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import com.example.petwalker.User;
-
-import android.util.Log;
-import android.widget.EditText;
-import android.text.Editable;
-import android.widget.Button;
-import android.text.TextWatcher;
-import android.os.Bundle;
-import android.view.View;
 import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    String msg = "FYP: ";
-
     private FirebaseAuth mAuth;
     private EditText userNameInput, userPwInput;
     private Button createButton, loginButton;
 
-    private DatabaseReference mDatabase, userRef, nextUserIdRef;
+    private FirebaseManager fypDB = FirebaseManager.getInstance();
+    private DatabaseReference databaseRef = fypDB.getDatabaseRef();
+    private DatabaseReference userRef, nextUserIdRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(msg, "onCreate() event");
 
         // Hide the status bar.
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
 
-        // Initialize Firebase Authentication
+        // Initialize Firebase related var
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance("https://fyp-2023-fad2a-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
-        userRef = mDatabase.child("users");
-        nextUserIdRef = mDatabase.child("nextUserId");
+        userRef = databaseRef.child("users");
+        nextUserIdRef = databaseRef.child("nextUserId");
 
         userNameInput = findViewById(R.id.user_name_input);
         userPwInput = findViewById(R.id.user_age_input);
         createButton = findViewById(R.id.start_button);
         loginButton = findViewById(R.id.login_button);
 
+        //Bundle for the next activity
+        Bundle userData = new Bundle();
 
         //Create New User
         // Adding onClickListener to start button
@@ -78,9 +74,11 @@ public class MainActivity extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     long nextUserID = dataSnapshot.getValue(Long.class);
                                     // Use the current value of "nextUserID" as the ID for the new user
-                                    User newUser = new User(Long.toString(nextUserID), username, "n/a", "n/a", 0.0);
+                                    User newUser = new User(Long.toString(nextUserID), username, "n/a", 0, 0.0);
                                     // Save the new user to the database
                                     userRef.child(Long.toString(nextUserID)).setValue(newUser);
+                                    // Save current user's id to bundle
+                                    userData.putString("uid", Long.toString(nextUserID));
 
                                     // Increment the value of "nextUserID" in the database by 1
                                     nextUserIdRef.setValue(nextUserID + 1);
@@ -94,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
                             //jump to collect new user's info
                             Intent intent = new Intent(MainActivity.this, newUserEnterInfo.class);
+                            intent.putExtras(userData);
                             startActivity(intent);
                         } else {
                             // Sign up failed
@@ -159,35 +158,5 @@ public class MainActivity extends AppCompatActivity {
         String userAgeInputText = userPwInput.getText().toString().trim();
         createButton.setEnabled(!userNameInputText.isEmpty() && !userAgeInputText.isEmpty());
         loginButton.setEnabled(!userNameInputText.isEmpty() && !userAgeInputText.isEmpty());
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(msg, "onStart() event");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(msg, "onResume() event");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(msg, "onPause() event");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(msg, "onStop() event");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(msg, "onDestroy() event");
     }
 }

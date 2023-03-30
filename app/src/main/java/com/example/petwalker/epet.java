@@ -75,11 +75,6 @@ public class epet extends AppCompatActivity implements SensorEventListener {
             isCounterSensorPresent = false;
         }
 
-        //progress bar
-        ProgressBar progressBar = findViewById(R.id.horizontal_progress_bar);
-        int progressValue = (int) ((float)stepCount/2000*100); // Set the progress value here
-        progressBar.setProgress(progressValue);
-
     }
 
     @Override
@@ -88,6 +83,10 @@ public class epet extends AppCompatActivity implements SensorEventListener {
         {
             stepCount = (int) sensorevent.values[0];
             textViewStepCounter.setText(String.valueOf(stepCount)+"/2000");
+            //progress bar
+            ProgressBar progressBar = findViewById(R.id.horizontal_progress_bar);
+            int progressValue = (int) ((float)stepCount/2000*100); // Set the progress value here
+            progressBar.setProgress(progressValue);
         }
     }
 

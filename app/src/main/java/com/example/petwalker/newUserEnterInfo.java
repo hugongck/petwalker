@@ -3,7 +3,6 @@ package com.example.petwalker;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,9 +56,9 @@ public class newUserEnterInfo extends AppCompatActivity {
                 String userGender = userGenderInput.getSelectedItem().toString();
                 double userWeight = Double.parseDouble(userWeightInput.getText().toString());
 
-                //userRef.child(currentUid).child("age").setValue(userAge);
-                //userRef.child(currentUid).child("gender").setValue(userGender);
-                //userRef.child(currentUid).child("weight").setValue(userWeight);
+                userRef.child(currentUid).child("age").setValue(userAge);
+                userRef.child(currentUid).child("gender").setValue(userGender);
+                userRef.child(currentUid).child("weight").setValue(userWeight);
 
                 Intent intent = new Intent(newUserEnterInfo.this, Dashboard.class);
                 startActivity(intent);

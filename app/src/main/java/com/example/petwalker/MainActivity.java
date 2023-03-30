@@ -13,21 +13,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private EditText userNameInput, userPwInput;
     private Button createButton, loginButton;
 
     private FirebaseManager fypDB = FirebaseManager.getInstance();
     private DatabaseReference databaseRef = fypDB.getDatabaseRef();
-    private DatabaseReference userRef;
+    private DatabaseReference userRef = databaseRef.child("users");;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +36,7 @@ public class MainActivity extends AppCompatActivity {
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
 
-        // Initialize Firebase related var
-        mAuth = FirebaseAuth.getInstance();
-        userRef = databaseRef.child("users");
-
+        // Assign ViewIds to var
         userNameInput = findViewById(R.id.user_name_input);
         userPwInput = findViewById(R.id.user_age_input);
         createButton = findViewById(R.id.start_button);
@@ -63,15 +57,15 @@ public class MainActivity extends AppCompatActivity {
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
                             // Sign up success
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser userAuth = mAuth.getCurrentUser();
                             Toast.makeText(MainActivity.this, "Account created successfully.", Toast.LENGTH_SHORT).show();
 
                             // Use the current value of "nextUserID" as the ID for the new user
-                            User newUser = new User(user.getUid(), username, "none", 0, 0.0);
+                            User newUser = new User(userAuth.getUid(), username, "none", 0, 0.0);
                             // Save the new user to the database
-                            userRef.child(user.getUid()).setValue(newUser);
+                            userRef.child(userAuth.getUid()).setValue(newUser);
                             // Save current user's id to bundle
-                            userData.putString("uid", user.getUid());
+                            userData.putString("uid", userAuth.getUid());
 
                             //jump to collect new user's info
                             Intent intent = new Intent(MainActivity.this, newUserEnterInfo.class);

@@ -1,11 +1,14 @@
 package com.example.petwalker;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -14,17 +17,51 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import android.widget.Button;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class HealthReport extends AppCompatActivity {
 
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
+    private FirebaseManager fypDB = FirebaseManager.getInstance();
+    private DatabaseReference databaseRef = fypDB.getDatabaseRef();
+    private DatabaseReference currentUserRef;
+
+    private User currentUserData = new User();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_health_report);
+
+        //Retrieve user data from database
+        String uid = mAuth.getCurrentUser().getUid();
+        currentUserRef = databaseRef.child("users").child(uid);
+        currentUserRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get the user data from the snapshot
+                User currentUserData = dataSnapshot.getValue(User.class);
+
+                // Use the retrieved values as needed
+                // ...
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle errors
+                String TAG = "TAG: ";
+                Log.e(TAG, "Database error: " + databaseError.getMessage());
+                Toast.makeText(getApplicationContext(), "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         // Hide the status bar.
         View decorView = getWindow().getDecorView();

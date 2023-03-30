@@ -94,7 +94,7 @@
             android:text="Daily Walk"
             android:textColor="#000000"
             android:textSize="24dp"
-            app:layout_constraintBottom_toTopOf="@+id/horizontal_progress_bar"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout_progress_bar"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -107,25 +107,35 @@
             android:text="1696/2000"
             android:textColor="#000000"
             android:textSize="24dp"
-            app:layout_constraintBottom_toTopOf="@+id/horizontal_progress_bar"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout_progress_bar"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <ProgressBar
-            android:id="@+id/horizontal_progress_bar"
-            style="@android:style/Widget.ProgressBar.Horizontal"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout_progress_bar"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="32dp"
-            android:max="100"
-            android:progress="0"
-            android:progressDrawable="@drawable/progress_bar_border"
-            android:progressTint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/progress_bar_border">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:progress="35"
+                app:indicatorColor="#000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:trackColor="@color/white"
+                app:trackThickness="20dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/epet_talk"

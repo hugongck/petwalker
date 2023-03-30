@@ -60,8 +60,8 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
         });
 
         //step count
-        if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){ //ask for permission
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) { //ask for permission
             requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -69,21 +69,14 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        if(sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null)
-        {
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
             mStepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
             isCounterSensorPresent = true;
-        }
-        else
-        {
+        } else {
             textViewStepCounter.setText("-");
             isCounterSensorPresent = false;
         }
 
-        //progress bar
-        ProgressBar progressBar = findViewById(R.id.circular_progress_bar);
-        int progressValue = (int) ((float)stepCount/2000*100); // Set the progress value here
-        progressBar.setProgress(progressValue);
     }
 
     @Override
@@ -93,15 +86,12 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
             stepCount = (int) sensorevent.values[0];
             textViewStepCounter.setText(String.valueOf(stepCount));
             //progress bar
-            ProgressBar progressBar = findViewById(R.id.circular_progress_bar);
+            CircularProgressIndicator progressBar = findViewById(R.id.circular_progress_bar);
             int progressValue = (int) ((float)stepCount/2000*100); // Set the progress value here
             progressBar.setProgress(progressValue);
-
-            if (stepCount>=2000){
-                // Set indicator color 整唔撚到屌
-                progressBar.setBackgroundColor(Color.parseColor("#5CF6DB"));
+            if (progressValue >= 100) {
+                progressBar.setIndicatorColor(Color.parseColor("#5CF6DB"));
             }
-
         }
     }
 

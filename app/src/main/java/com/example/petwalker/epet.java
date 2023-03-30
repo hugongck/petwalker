@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,6 +17,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 public class epet extends AppCompatActivity implements SensorEventListener {
 
@@ -84,9 +87,12 @@ public class epet extends AppCompatActivity implements SensorEventListener {
             stepCount = (int) sensorevent.values[0];
             textViewStepCounter.setText(String.valueOf(stepCount)+"/2000");
             //progress bar
-            ProgressBar progressBar = findViewById(R.id.horizontal_progress_bar);
+            LinearProgressIndicator progressBar = findViewById(R.id.progress_bar);
             int progressValue = (int) ((float)stepCount/2000*100); // Set the progress value here
             progressBar.setProgress(progressValue);
+            if (progressValue >= 100) {
+                progressBar.setIndicatorColor(Color.parseColor("#5CF6DB"));
+            }
         }
     }
 

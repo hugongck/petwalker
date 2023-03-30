@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseManager fypDB = FirebaseManager.getInstance();
     private DatabaseReference databaseRef = fypDB.getDatabaseRef();
-    private DatabaseReference userRef, nextUserIdRef;
+    private DatabaseReference userRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +42,16 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Firebase related var
         mAuth = FirebaseAuth.getInstance();
         userRef = databaseRef.child("users");
-        nextUserIdRef = databaseRef.child("nextUserId");
 
         userNameInput = findViewById(R.id.user_name_input);
         userPwInput = findViewById(R.id.user_age_input);
         createButton = findViewById(R.id.start_button);
         loginButton = findViewById(R.id.login_button);
 
-        //Bundle for the next activity
+        // Bundle for the next activity
         Bundle userData = new Bundle();
 
-        //Create New User
+        // Create New User
         // Adding onClickListener to start button
         createButton.setOnClickListener(view -> {
             String username = userNameInput.getText().toString().trim();
@@ -65,30 +64,14 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign up success
                             FirebaseUser user = mAuth.getCurrentUser();
-                            // Do something with the signed-up user
                             Toast.makeText(MainActivity.this, "Account created successfully.", Toast.LENGTH_SHORT).show();
 
-                            // Retrieve the current value of "nextUserID" from the database
-                            nextUserIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    long nextUserID = dataSnapshot.getValue(Long.class);
-                                    // Use the current value of "nextUserID" as the ID for the new user
-                                    User newUser = new User(Long.toString(nextUserID), username, "n/a", 0, 0.0);
-                                    // Save the new user to the database
-                                    userRef.child(Long.toString(nextUserID)).setValue(newUser);
-                                    // Save current user's id to bundle
-                                    userData.putString("uid", Long.toString(nextUserID));
-
-                                    // Increment the value of "nextUserID" in the database by 1
-                                    nextUserIdRef.setValue(nextUserID + 1);
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    // Handle any errors
-                                }
-                            });
+                            // Use the current value of "nextUserID" as the ID for the new user
+                            User newUser = new User(user.getUid(), username, "none", 0, 0.0);
+                            // Save the new user to the database
+                            userRef.child(user.getUid()).setValue(newUser);
+                            // Save current user's id to bundle
+                            userData.putString("uid", user.getUid());
 
                             //jump to collect new user's info
                             Intent intent = new Intent(MainActivity.this, newUserEnterInfo.class);
@@ -101,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     });
         });
 
-        //Login Current User
+        // Login Current User
         // Set click listener for the login button
         loginButton.setOnClickListener(view -> {
             String email = userNameInput.getText().toString().trim() + "@petwalker.fyp";

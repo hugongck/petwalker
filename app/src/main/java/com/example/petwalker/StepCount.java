@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,6 +19,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+
 
 public class StepCount extends AppCompatActivity implements SensorEventListener {
 
@@ -81,7 +86,6 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
         progressBar.setProgress(progressValue);
     }
 
-
     @Override
     public void onSensorChanged(SensorEvent sensorevent) {
         if(sensorevent.sensor == mStepCounter)
@@ -92,6 +96,12 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
             ProgressBar progressBar = findViewById(R.id.circular_progress_bar);
             int progressValue = (int) ((float)stepCount/2000*100); // Set the progress value here
             progressBar.setProgress(progressValue);
+
+            if (stepCount>=2000){
+                // Set indicator color 整唔撚到屌
+                progressBar.setBackgroundColor(Color.parseColor("#5CF6DB"));
+            }
+
         }
     }
 

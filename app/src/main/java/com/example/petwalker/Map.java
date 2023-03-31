@@ -1,6 +1,4 @@
-/*
 package com.example.petwalker;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -28,27 +26,11 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.os.Handler;
-import android.os.SystemClock;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import java.util.Calendar;
-import java.util.Random;
-
-
 public class Map extends AppCompatActivity implements LocationListener {
 
     private MapView map;
     private LocationManager locationManager;
     private MyLocationNewOverlay locationOverlay;
-
-    private Marker destinationMarker;
-    private ImageView targetTaskImageView;
-    private RelativeLayout targetTaskBox;
-    private boolean taskCompleted;
-    private Handler refreshTaskHandler;
-    private Random random;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +69,6 @@ public class Map extends AppCompatActivity implements LocationListener {
 
         // Request location permissions
         checkLocationPermissions();
-
-        targetTaskImageView = findViewById(R.id.img_target_task);
-        targetTaskBox = findViewById(R.id.constraintLayout_target_task);
-        refreshTaskHandler = new Handler();
-        random = new Random();
-
     }
 
     private void initializeMapView() {
@@ -100,7 +76,7 @@ public class Map extends AppCompatActivity implements LocationListener {
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
-        map.getController().setZoom(17.0);
+        map.getController().setZoom(17);
 
         locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), map);
         locationOverlay.enableMyLocation();
@@ -139,12 +115,6 @@ public class Map extends AppCompatActivity implements LocationListener {
         GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
         map.getController().animateTo(startPoint);
 
-
-        if (!taskCompleted) {
-            checkIfDestinationReached(location);
-        }
-
-
         // Set a pin point
         GeoPoint endPoint = new GeoPoint(location.getLatitude() + 0.005, location.getLongitude() + 0.005);
         Marker destinationMarker = new Marker(map);
@@ -166,76 +136,6 @@ public class Map extends AppCompatActivity implements LocationListener {
         locationManager.removeUpdates(this); // Stop receiving location updates after drawing the route
     }
 
-    private void checkIfDestinationReached(Location location) {
-        float[] results = new float[1];
-        Location.distanceBetween(location.getLatitude(), location.getLongitude(), destinationMarker.getPosition().getLatitude(), destinationMarker.getPosition().getLongitude(), results);
-        float distanceInMeters = results[0];
-
-        if (distanceInMeters < 50) { // Change this value based on the desired distance threshold
-            taskCompleted = true;
-            targetTaskImageView.setImageResource(R.drawable.task_done);
-            targetTaskBox.setBackgroundResource(R.color.black);
-        }
-    }
-
-    private void refreshTaskAtMidnight() {
-        Calendar now = Calendar.getInstance();
-        Calendar midnight = Calendar.getInstance();
-        midnight.set(Calendar.HOUR_OF_DAY, 0);
-        midnight.set(Calendar.MINUTE, 0);
-        midnight.set(Calendar.SECOND, 0);
-        midnight.set(Calendar.MILLISECOND, 0);
-
-        if (now.after(midnight)) {
-            // Reset task completion status
-            taskCompleted = false;
-
-            // Update task UI elements
-            targetTaskImageView.setImageResource(R.drawable.task_not_done);
-            targetTaskBox.setBackgroundResource(R.drawable.color_box);
-        }
-
-        // Schedule next refresh for tomorrow
-        refreshTaskHandler.postDelayed(this::refreshTaskAtMidnight, getMillisUntilMidnight());
-    }
-
-    private long getMillisUntilMidnight() {
-        Calendar now = Calendar.getInstance();
-        Calendar midnight = Calendar.getInstance();
-        midnight.set(Calendar.HOUR_OF_DAY, 0);
-        midnight.set(Calendar.MINUTE, 0);
-        midnight.set(Calendar.SECOND, 0);
-        midnight.set(Calendar.MILLISECOND, 0);
-
-        if (now.after(midnight)) {
-            midnight.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        return midnight.getTimeInMillis() - now.getTimeInMillis();
-    }
-
-    private void resetTask() {
-        taskCompleted = false;
-        targetTaskImageView.setImageResource(R.drawable.task_not_done);
-        targetTaskBox.setBackgroundResource(R.drawable.color_box);
-        setRandomDestination();
-    }
-
-    private void setRandomDestination() {
-        double randomLatitude = random.nextDouble() * 0.01 - 0.005;
-        double randomLongitude = random.nextDouble() * 0.01 - 0.005;
-        GeoPoint destination = new GeoPoint(locationOverlay.getMyLocation().getLatitude() + randomLatitude, locationOverlay.getMyLocation().getLongitude() + randomLongitude);
-        destinationMarker.setPosition(destination);
-    }
-
-    // Call this method in onCreate and onResume
-    private void setupLocationManagerAndRefreshTask() {
-        setupLocationManager();
-        refreshTaskAtMidnight();
-    }
-
-
-
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
@@ -255,7 +155,6 @@ public class Map extends AppCompatActivity implements LocationListener {
         if (locationOverlay != null) {
             locationOverlay.enableMyLocation();
         }
-        setupLocationManagerAndRefreshTask();
     }
 
     @Override
@@ -265,11 +164,10 @@ public class Map extends AppCompatActivity implements LocationListener {
         if (locationOverlay != null) {
             locationOverlay.disableMyLocation();
         }
-        refreshTaskHandler.removeCallbacksAndMessages(null);
     }
 }
-*/
 
+/*
 package com.example.petwalker;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -378,6 +276,7 @@ public class Map extends AppCompatActivity {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+
     }
 
     private void setupDailyTask() {
@@ -532,3 +431,4 @@ public class Map extends AppCompatActivity {
         }, timeUntilMidnight, TimeUnit.DAYS.toMillis(1));
     }
 }
+ */

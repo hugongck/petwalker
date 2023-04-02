@@ -3,6 +3,7 @@ package com.example.petwalker;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+
 
 public class StepCount extends AppCompatActivity implements SensorEventListener {
 
@@ -28,12 +31,12 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
     private boolean isCounterSensorPresent;
     int stepCount = 0;
 
-    private TextView stepTextView = findViewById(R.id.txt_step_count_box);
-    private TextView timeTextView = findViewById(R.id.txt_time_count_box);;
-    private TextView distanceTextView = findViewById(R.id.txt_distance_count_box);
-    private TextView twentyminwalktextview = findViewById(R.id.txt_time_task);
-    private TextView fivehundredmwalktextview = findViewById(R.id.txt_distance_task);
-    private TextView tenthousandstepstextview = findViewById(R.id.txt_target_task);
+    private TextView stepTextView;
+    private TextView timeTextView;
+    private TextView distanceTextView;
+    private TextView twentyminwalktextview;
+    private TextView fivehundredmwalktextview;
+    private TextView tenthousandstepstextview;
     private float totalDistance;
     private long startTime;
     private static final int PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 1;
@@ -47,6 +50,13 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
+
+        stepTextView = findViewById(R.id.txt_step_count_box);
+        timeTextView = findViewById(R.id.txt_time_count_box);;
+        distanceTextView = findViewById(R.id.txt_distance_count_box);
+        twentyminwalktextview = findViewById(R.id.txt_time_task);
+        fivehundredmwalktextview = findViewById(R.id.txt_distance_task);
+        tenthousandstepstextview = findViewById(R.id.txt_target_task);
 
         // Back button
         Button btn_back = findViewById(R.id.btn_back);
@@ -84,7 +94,6 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
             textViewStepCounter.setText("-");
             isCounterSensorPresent = false;
         }
-
     }
 
     @Override
@@ -121,9 +130,9 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        /*if(sensorevent.sensor == mStepCounter)
+        if(event.sensor == mStepCounter)
         {
-            stepCount = (int) sensorevent.values[0];
+            stepCount = (int) event.values[0];
             textViewStepCounter.setText(String.valueOf(stepCount));
             //progress bar
             CircularProgressIndicator progressBar = findViewById(R.id.circular_progress_bar);
@@ -132,7 +141,7 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
             if (progressValue >= 100) {
                 progressBar.setIndicatorColor(Color.parseColor("#5CF6DB"));
             }
-        }*/
+        }
         if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
             stepCount = (int) event.values[0];
             updateStepCount();

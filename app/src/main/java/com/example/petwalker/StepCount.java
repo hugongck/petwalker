@@ -86,6 +86,27 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
                 sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
                 if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
                     stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+                    // step count
+                    if (previousStepCount == 0) {
+                        // first time step count update
+                        previousStepCount = stepCount;
+                        previousTime = System.currentTimeMillis();
+                    }
+                    int steps = stepCount - previousStepCount;
+                    long currentTime = System.currentTimeMillis();
+                    txtStepCountBox.setText(String.valueOf(stepCount));
+                    txtWalkedStep.setText(String.valueOf(stepCount));
+                    updateProgressBar();
+                    totalTimeWalked += currentTime - previousTime;
+                    txtTimeCountBox.setText(getFormattedTime(totalTimeWalked));
+                    totalDistance += steps * stepLength;
+                    txtDistanceCountBox.setText(String.format(Locale.getDefault(), "%.2f m", totalDistance));
+                    previousStepCount = stepCount;
+                    previousTime = currentTime;
+                    // Task
+                    changeTaskCard("time", checkTimeTask());
+                    changeTaskCard("distance", checkDistanceTask());
+                    changeTaskCard("target", checkTargetTask());
                 } else {
                     txtStepCountBox.setText("-");
                     txtWalkedStep.setText("-");
@@ -94,11 +115,6 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
 
                 }
 
-                updateProgressBar();
-                // Task
-                changeTaskCard("time", checkTimeTask());
-                changeTaskCard("distance", checkDistanceTask());
-                changeTaskCard("target", checkTargetTask());
             }
 
             @Override

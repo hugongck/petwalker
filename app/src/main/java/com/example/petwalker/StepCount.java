@@ -174,7 +174,6 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
             stepCount = (int) sensorEvent.values[0];
             if (previousStepCount == 0) {
                 // first time step count update
@@ -199,7 +198,7 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
                 changeTaskCard("distance", checkDistanceTask());
                 changeTaskCard("target", checkTargetTask());
             }
-        }
+
     }
 
     @Override

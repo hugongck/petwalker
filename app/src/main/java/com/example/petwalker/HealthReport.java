@@ -36,6 +36,7 @@ public class HealthReport extends AppCompatActivity {
     private FirebaseManager fypDB = FirebaseManager.getInstance();
     private DatabaseReference databaseRef = fypDB.getDatabaseRef();
     private DatabaseReference currentUserRef;
+    private String currentPage = "Daily";
 
     private User currentUserData = new User();
 
@@ -99,6 +100,7 @@ public class HealthReport extends AppCompatActivity {
         btn_daily.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentPage = "Daily";
                 // Change background of button when it's pressed
                 btn_daily.setBackgroundResource(R.drawable.color_box);
 
@@ -111,6 +113,7 @@ public class HealthReport extends AppCompatActivity {
         btn_weekly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentPage = "Weekly";
                 // Change background of button when it's pressed
                 btn_weekly.setBackgroundResource(R.drawable.color_box);
 
@@ -123,6 +126,7 @@ public class HealthReport extends AppCompatActivity {
         btn_monthly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentPage = "Monthly";
                 // Change background of button when it's pressed
                 btn_monthly.setBackgroundResource(R.drawable.color_box);
 

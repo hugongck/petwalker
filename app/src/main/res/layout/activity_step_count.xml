@@ -271,43 +271,7 @@
                     app:layout_constraintTop_toBottomOf="@id/txt_distance_box" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-            <!--
-            <TextView
-                android:id="@+id/time_box"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/box"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:paddingTop="8dp"
-                android:paddingBottom="10dp"
-                android:text="Time\n38:14"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toStartOf="@id/distance_box"
-                app:layout_constraintStart_toEndOf="@id/constraintLayout_steps"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/distance_box"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/box"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:paddingTop="8dp"
-                android:paddingBottom="10dp"
-                android:text="Distance\n740m"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/time_box"
-                app:layout_constraintTop_toTopOf="parent" />
-        -->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

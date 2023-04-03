@@ -1,62 +1,119 @@
 package com.example.petwalker;
 
-import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
+import java.util.Locale;
+
 
 public class StepCount extends AppCompatActivity implements SensorEventListener {
-
-    private TextView textViewStepCounter, textViewStepDetector;
     private SensorManager sensorManager;
-    private Sensor mStepCounter;
-    private boolean isCounterSensorPresent;
-    int stepCount = 0;
+    private Sensor stepSensor;
 
-    private TextView stepTextView;
-    private TextView timeTextView;
-    private TextView distanceTextView;
-    private TextView twentyminwalktextview;
-    private TextView fivehundredmwalktextview;
-    private TextView tenthousandstepstextview;
-    private float totalDistance;
-    private long startTime;
-    private static final int PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 1;
+    private int stepCount = 0;
+    private int previousStepCount = 0;
+    private long totalTimeWalked = 0;
+    private long previousTime = 0;
+    private float totalDistance = 0;
+    private float stepLength = 0f;
+    private int taskStep = 0;
+    private int taskTime = 150;
+    private int taskDistance = 0;
+
+    private TextView txtStepCountBox, txtWalkedStep, txtTimeCountBox, txtDistanceCountBox, txtTimeTask, txtDistanceTask, txtTargetTas, txtTotalStep;
+
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
+    private FirebaseManager fypDB = FirebaseManager.getInstance();
+    private DatabaseReference databaseRef = fypDB.getDatabaseRef();
+    private DatabaseReference currentUserRef;
+    private String currentPage = "Daily";
+
+    private User currentUserData = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_count);
 
+        //Retrieve user data from database
+        String uid = mAuth.getCurrentUser().getUid();
+        currentUserRef = databaseRef.child("users").child(uid);
+        currentUserRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get the user data from the snapshot
+                User currentUserData = dataSnapshot.getValue(User.class);
+
+                // Use the retrieved values as needed
+                stepLength = getStepLength(currentUserData.getAge(), currentUserData.getWeight(), currentUserData.getGender());
+                taskStep = getTaskStep(currentUserData.getAge());
+                taskDistance = getTaskDistance(currentUserData.getAge());
+                txtTotalStep = findViewById(R.id.txt_total_step);
+                txtTotalStep.setText("/"+Integer.toString(taskStep));
+                txtTimeTask = findViewById(R.id.txt_time_task);
+                txtTimeTask.setText(Integer.toString(taskTime)+"min");
+                txtDistanceTask = findViewById(R.id.txt_distance_task);
+                txtDistanceTask.setText(Integer.toString(taskDistance)+"m");
+
+                //step count
+                txtStepCountBox = findViewById(R.id.txt_step_count_box);
+                txtWalkedStep = findViewById(R.id.txt_walked_step);
+                txtTimeCountBox = findViewById(R.id.txt_time_count_box);
+                txtDistanceCountBox = findViewById(R.id.txt_distance_count_box);
+
+                sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+                if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
+                    stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+                } else {
+                    txtStepCountBox.setText("-");
+                    txtWalkedStep.setText("-");
+                    txtTimeCountBox.setText("-");
+                    txtDistanceCountBox.setText("-");
+
+                }
+
+                updateProgressBar();
+                // Task
+                changeTaskCard("time", checkTimeTask());
+                changeTaskCard("distance", checkDistanceTask());
+                changeTaskCard("target", checkTargetTask());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle errors
+                String TAG = "TAG: ";
+                Log.e(TAG, "Database error: " + databaseError.getMessage());
+                Toast.makeText(getApplicationContext(), "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // Hide the status bar.
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
-
-        stepTextView = findViewById(R.id.txt_step_count_box);
-        timeTextView = findViewById(R.id.txt_time_count_box);;
-        distanceTextView = findViewById(R.id.txt_distance_count_box);
-        twentyminwalktextview = findViewById(R.id.txt_time_task);
-        fivehundredmwalktextview = findViewById(R.id.txt_distance_task);
-        tenthousandstepstextview = findViewById(R.id.txt_target_task);
 
         // Back button
         Button btn_back = findViewById(R.id.btn_back);
@@ -76,170 +133,235 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
                 startActivity(intent);
             }
         });
+    }
 
-        //step count
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) { //ask for permission
-            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
-        }
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        textViewStepCounter = findViewById(R.id.txt_walked_step);
-
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
-            mStepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-            isCounterSensorPresent = true;
+    private Boolean checkTimeTask() {
+        if (totalTimeWalked >= taskTime) {
+            return true;
         } else {
-            textViewStepCounter.setText("-");
-            isCounterSensorPresent = false;
+            return false;
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_ACTIVITY_RECOGNITION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted, start tracking
-                startTracking();
-            } else {
-                // Permission is denied, show an error message
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-            }
+    private Boolean checkDistanceTask() {
+        if (totalDistance >= taskDistance) {
+            return true;
+        } else {
+            return false;
         }
     }
 
-    private void startTracking() {
-        if (sensorManager != null) {
-            // Register the step sensor listener
-            sensorManager.registerListener(this, mStepCounter, SensorManager.SENSOR_DELAY_NORMAL);
 
-            // Start the timer
-            startTime = SystemClock.elapsedRealtime();
-            updateTime();
-
-            // Reset the distance
-            totalDistance = 0;
-            updateDistance();
-
-            // Check if the tasks have been completed
-            checkTasks();
-        }
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if(event.sensor == mStepCounter)
-        {
-            stepCount = (int) event.values[0];
-            textViewStepCounter.setText(String.valueOf(stepCount));
-            //progress bar
-            CircularProgressIndicator progressBar = findViewById(R.id.circular_progress_bar);
-            int progressValue = (int) ((float)stepCount/2000*100); // Set the progress value here
-            progressBar.setProgress(progressValue);
-            if (progressValue >= 100) {
-                progressBar.setIndicatorColor(Color.parseColor("#5CF6DB"));
-            }
-        }
-        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            stepCount = (int) event.values[0];
-            updateStepCount();
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    private Boolean checkTargetTask() {
+        return false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //if(sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null)
-        //    sensorManager.registerListener(this, mStepCounter, SensorManager.SENSOR_DELAY_NORMAL);
+        if (stepSensor != null) {
+            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI);
+        }
     }
 
     @Override
     protected void onPause() {
-        /*super.onPause();
-        if(sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null)
-            sensorManager.unregisterListener(this, mStepCounter);*/
         super.onPause();
-        // Unregister the step sensor listener
-        if (sensorManager != null) {
-            sensorManager.unregisterListener(this);
+        if (stepSensor != null) {
+            sensorManager.unregisterListener(this, stepSensor);
         }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        sensorManager.unregisterListener(this);
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+            stepCount = (int) sensorEvent.values[0];
+            if (previousStepCount == 0) {
+                // first time step count update
+                previousStepCount = stepCount;
+                previousTime = System.currentTimeMillis();
+            }
+            int steps = stepCount - previousStepCount;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - previousTime >= 1000) {
+                // update UI every 1 seconds
+                txtStepCountBox.setText(String.valueOf(stepCount));
+                txtWalkedStep.setText(String.valueOf(stepCount));
+                updateProgressBar();
+                totalTimeWalked += currentTime - previousTime;
+                txtTimeCountBox.setText(getFormattedTime(totalTimeWalked));
+                totalDistance += steps * stepLength;
+                txtDistanceCountBox.setText(String.format(Locale.getDefault(), "%.2f m", totalDistance));
+                previousStepCount = stepCount;
+                previousTime = currentTime;
+                // Task
+                changeTaskCard("time", checkTimeTask());
+                changeTaskCard("distance", checkDistanceTask());
+                changeTaskCard("target", checkTargetTask());
+            }
+        }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    public void onAccuracyChanged(Sensor sensor, int i) {
     }
 
-    private void updateStepCount() {
-        stepTextView.setText(stepCount);
-        updateDistance();
-        if (stepCount >= 10000) {
-            tenthousandstepstextview.setText("10000 steps success");
+    private String getFormattedTime(long milliseconds) {
+        long seconds = (milliseconds / 1000) % 60;
+        long minutes = (milliseconds / (1000 * 60)) % 60;
+        long hours = (milliseconds / (1000 * 60 * 60)) % 24;
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    private float getStepLength(int userAge, double userHeight, String userGender){
+        float stepLength = 0f;
+        if (userGender.equals("Male")) {
+            // Calculate step length for male based on age and height
+            if (userAge >= 18 && userAge <= 49) {
+                stepLength = (float) (userHeight * 0.415);
+            } else if (userAge >= 50 && userAge <= 59) {
+                stepLength = (float) (userHeight * 0.40);
+            } else if (userAge >= 60 && userAge <= 69) {
+                stepLength = (float) (userHeight * 0.385);
+            } else if (userAge >= 70 && userAge <= 79) {
+                stepLength = (float) (userHeight * 0.37);
+            } else {
+                stepLength = (float) (userHeight * 0.355);
+            }
+        } else if (userGender.equals("Female")) {
+            // Calculate step length for female based on age and height
+            if (userAge >= 18 && userAge <= 49) {
+                stepLength = (float) (userHeight * 0.413);
+            } else if (userAge >= 50 && userAge <= 59) {
+                stepLength = (float) (userHeight * 0.395);
+            } else if (userAge >= 60 && userAge <= 69) {
+                stepLength = (float) (userHeight * 0.38);
+            } else if (userAge >= 70 && userAge <= 79) {
+                stepLength = (float) (userHeight * 0.365);
+            } else {
+                stepLength = (float) (userHeight * 0.35);
+            }
         }
-        checkTasks();
+        return stepLength;
+
+/*
+        Reference:
+
+        Studenski, S., Perera, S., Patel, K., Rosano, C., Faulkner, K., Inzitari, M., Brach, J., Chandler, J., Cawthon, P., Connor, E. B., Nevitt, M., Visser, M., Kritchevsky, S., Badinelli, S., Harris, T., Newman, A. B., Cauley, J., Ferrucci, L., Guralnik, J., & Life Study Investigators. (2011). Age-related changes in gait and mobility: impact on intervention strategies. Geriatrics & gerontology international, 11(4), 292–302. https://doi.org/10.1111/j.1447-0594.2010.00607.x
+
+        Shangguan, Y., Liang, Y., Zhou, Y., & Zhang, K. (2017). Age-related differences in step length variability during a continuous normal walking protocol. Journal of physical therapy science, 29(8), 1395–1399. https://doi.org/10.1589/jpts.29.1395
+
+        Roig, M., Montesinos, L., Sanabria, D., Valldecabres, R., Ballester, R., Torner, A., & Benavent-Caballer, V. (2020). Walking in Old Age and Its Relationship with Physical and Cognitive Function. Frontiers in psychology, 11, 1451. https://doi.org/10.3389/fpsyg.2020.01451
+*/
+
     }
 
-    private void updateTime() {
-        long elapsedTime = SystemClock.elapsedRealtime() - startTime;
-        int hours = (int) (elapsedTime / 3600000);
-        int minutes = (int) ((elapsedTime - hours * 3600000) / 60000);
-        int seconds = (int) ((elapsedTime - hours * 3600000 - minutes * 60000) / 1000);
-        timeTextView.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+    public static int getTaskStep(int userAge) {
+        int taskStep = 0;
+        if (userAge <= 49) {
+            taskStep = 10000;
+        } else if (userAge >= 50 && userAge <= 59) {
+            taskStep = 8000;
+        } else if (userAge >= 60 && userAge <= 69) {
+            taskStep = 7000;
+        } else if (userAge >= 70 && userAge <= 79) {
+            taskStep = 6000;
+        } else if (userAge >= 80) {
+            taskStep = 5000;
+        }
+        return taskStep;
 
-        // Update the time every second
-        timeTextView.postDelayed(this::updateTime, 1000);
+/*
+        Reference:
 
-        // Check if 20 minutes have passed
-        if (minutes == 20) {
-            twentyminwalktextview.setText("20 min walk success");
+        Tudor-Locke, C., Craig, C. L., Brown, W. J., Clemes, S. A., De Cocker, K., Giles-Corti, B., ... & Blair, S. N. (2011). How many steps/day are enough for adults?. International Journal of Behavioral Nutrition and Physical Activity, 8(1), 79. https://doi.org/10.1186/1479-5868-8-79
+
+        Lee, I. M., Shiroma, E. J., & Lobelo, F. (2012). Pedometer-based physical activity interventions: a meta-analysis. American Journal of Preventive Medicine, 43(3), 340-349. https://doi.org/10.1016/j.amepre.2012.05.006
+
+        Bassett Jr, D. R., Wyatt, H. R., Thompson, H., & Peters, J. C. (2010). Hill JO. Pedometer-measured physical activity and health behaviors in US adults. Medicine and science in sports and exercise, 42(10), 1819-1825. https://doi.org/10.1249/MSS.0b013e3181dc2e54
+*/
+
+    }
+
+    public int getTaskDistance(int userAge) {
+        int taskDistance = 0;
+        if (userAge <= 49) {
+            taskDistance = 8000;
+        } else if (userAge >= 50 && userAge <= 59) {
+            taskDistance = 6400;
+        } else if (userAge >= 60 && userAge <= 69) {
+            taskDistance = 5600;
+        } else if (userAge >= 70 && userAge <= 79) {
+            taskDistance = 4800;
+        } else if (userAge >= 80) {
+            taskDistance = 4000;
+        }
+        return taskDistance;
+
+        /*
+        Reference:
+
+        Bassett, D. R. Jr., Wyatt, H. R., Thompson, H., Peters, J. C., & Hill, J. O. (2010). Pedometer-measured physical activity and health behaviors in United States adults. Medicine & Science in Sports & Exercise, 42(10), 1819-1825.
+
+        Physical Activity Guidelines Advisory Committee. (2018). 2018 Physical activity guidelines advisory committee scientific report. US Department of Health and Human Services.
+
+        Tudor-Locke, C., Craig, C. L., Brown, W. J., Clemes, S. A., De Cocker, K., Giles-Corti, B., ... & Blair, S. N. (2011). How many steps/day are enough? For adults. International Journal of Behavioral Nutrition and Physical Activity, 8(1), 79.
+
+        World Health Organization. (2010). Global recommendations on physical activity for health. Geneva: World Health Organization.
+        */
+
+    }
+
+    private void updateProgressBar() {
+        CircularProgressIndicator progressBar = findViewById(R.id.circular_progress_bar);
+        int progressValue = (int) ((float)stepCount/taskStep*100); // Set the progress value here
+        progressBar.setProgress(progressValue);
+        if (progressValue >= 100) {
+            txtWalkedStep.setText("Completed");
+            progressBar.setIndicatorColor(Color.parseColor("#5CF6DB"));
         }
     }
 
-    private void updateDistance() {
-        float stepLength = getStepLength();
-        totalDistance = stepCount * stepLength ;
-        distanceTextView.setText(String.format("%.2f m", totalDistance));
-        if (totalDistance >= 500) {
-            fivehundredmwalktextview.setText("500m walk success");
+    private void changeTaskCard(String task, Boolean isTaskDone) {
+
+        ConstraintLayout constraintLayout = null;
+        ImageView imageView = null;
+        TextView textView = null;
+        TextView textView2 = null;
+
+        if (task.equals("time")) {
+            // Time
+            constraintLayout = findViewById(R.id.constraintLayout_time_task);
+            imageView = findViewById(R.id.img_time_task);
+            textView = findViewById(R.id.txt_time_task);
+            textView2 = findViewById(R.id.txt_time_task2);
+        } else if (task.equals("distance")) {
+            // Distance
+            constraintLayout = findViewById(R.id.constraintLayout_distance_task);
+            imageView = findViewById(R.id.img_distance_task);
+            textView = findViewById(R.id.txt_distance_task);
+            textView2 = findViewById(R.id.txt_distance_task2);
+        } else if (task.equals("target")) {
+            // Target
+            constraintLayout = findViewById(R.id.constraintLayout_target_task);
+            imageView = findViewById(R.id.img_target_task);
+            textView = findViewById(R.id.txt_target_task);
+            textView2 = findViewById(R.id.txt_target_task2);
         }
-    }
 
-    private float getStepLength() {
-        // The average step length for a person is 0.75 meters
-        return 0.75f;
-    }
-
-    private void checkTasks() {
-        /*if (stepCount >= 1000) {
-            Toast.makeText(this, "Congratulations! You've completed 1000 steps!", Toast.LENGTH_SHORT).show();
+        if (isTaskDone) {
+            // Done task
+            constraintLayout.setBackgroundColor(Color.parseColor("#000000"));
+            imageView.setImageResource(R.drawable.task_done);
+            textView.setTextColor(Color.parseColor("#5CF6DB"));
+            textView2.setTextColor(Color.parseColor("#5CF6DB"));
+        } else {
+            // Not done task
+            constraintLayout.setBackground(getResources().getDrawable(R.drawable.color_box));
+            imageView.setImageResource(R.drawable.task_not_done);
+            textView.setTextColor(Color.parseColor("#000000"));
+            textView2.setTextColor(Color.parseColor("#000000"));
         }
-
-        if (totalDistance >= 5) {
-            Toast.makeText(this, "Congratulations! You've walked 5 kilometers!", Toast.LENGTH_SHORT).show();
-        }*/
     }
 
 }

@@ -2,17 +2,11 @@ package com.example.petwalker;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,21 +15,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 
 public class StepCountActivity extends AppCompatActivity{
     private StepCounter stepCounter;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
-    private FirebaseManager fypDB = FirebaseManager.getInstance();
+    private FirebaseDBManager fypDB = FirebaseDBManager.getInstance();
     private DatabaseReference databaseRef = fypDB.getDatabaseRef();
     private DatabaseReference currentUserRef, dailyDataRef;
-    private User currentUserData = new User();
+    private User currentUser = new User();
+
+    private DailyData userDailyData;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +40,7 @@ public class StepCountActivity extends AppCompatActivity{
         currentUserRef = databaseRef.child("users").child(uid);
         dailyDataRef = databaseRef.child("daily_data").child(Time.getCurrentDate()).child(uid);
 
+        //create stepCounter.java object
         stepCounter = new StepCounter(this);
         if (stepCounter.stepSensor == null) {
             Toast.makeText(this, "Step sensor not available on this device", Toast.LENGTH_SHORT).show();
@@ -59,9 +53,10 @@ public class StepCountActivity extends AppCompatActivity{
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                     // Get the user data from the snapshot
-                    currentUserData = dataSnapshot.getValue(User.class);
+                    currentUser = dataSnapshot.getValue(User.class);
                     // Do something with the currentUserData object
-                    setStepCounterWithUserData(currentUserData);
+                    userDailyData = new DailyData(currentUser);
+                    setStepCounterWithUserData(currentUser);
                 } else {
                     // Handle case where data does not exist
                     Log.e("TAG", "Data does not exist");
@@ -154,11 +149,11 @@ public class StepCountActivity extends AppCompatActivity{
         sensorManager.unregisterListener(stepCounter);
     }
 
-    private void setStepCounterWithUserData(User currentUserData){
+    private void setStepCounterWithUserData(User currentUser){
         // Assign the retrieved values from currentUserRef as needed
-        stepCounter.stepLength = StepCounter.getStepLength(currentUserData.getAge(), currentUserData.getWeight(), currentUserData.getGender());
-        stepCounter.taskStep = StepCounter.getTaskStep(currentUserData.getAge());
-        stepCounter.taskDistance = StepCounter.getTaskDistance(currentUserData.getAge());
+        stepCounter.stepLength = StepCounter.getStepLength(currentUser.getAge(), currentUser.getWeight(), currentUser.getGender());
+        stepCounter.taskStep = StepCounter.getTaskStep(currentUser.getAge());
+        stepCounter.taskDistance = StepCounter.getTaskDistance(currentUser.getAge());
         stepCounter.txtTotalStep.setText("/"+Integer.toString(stepCounter.taskStep));
         stepCounter.txtTimeTask.setText(Integer.toString(stepCounter.taskTime)+"min");
         stepCounter.txtDistanceTask.setText(Integer.toString(stepCounter.taskDistance)+"m");

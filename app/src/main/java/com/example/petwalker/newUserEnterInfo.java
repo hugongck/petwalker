@@ -16,7 +16,7 @@ public class newUserEnterInfo extends AppCompatActivity {
     private EditText userAgeInput, userWeightInput;
     private Spinner userGenderInput;
 
-    private FirebaseManager fypDB = FirebaseManager.getInstance();
+    private FirebaseDBManager fypDB = FirebaseDBManager.getInstance();
     private DatabaseReference databaseRef = fypDB.getDatabaseRef();
     private DatabaseReference userRef = databaseRef.child("users");
 

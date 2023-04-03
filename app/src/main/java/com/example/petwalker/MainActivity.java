@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText userNameInput, userPwInput;
     private Button createButton, loginButton;
 
-    private FirebaseManager fypDB = FirebaseManager.getInstance();
+    private FirebaseDBManager fypDB = FirebaseDBManager.getInstance();
     private DatabaseReference databaseRef = fypDB.getDatabaseRef();
     private DatabaseReference userRef = databaseRef.child("users");;
 

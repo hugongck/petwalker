@@ -7,6 +7,14 @@ public class DailyData {
     private int taskDone;
     private String uid;
 
+    public DailyData(User user){
+        distanceWalked = 0.0;
+        finishTime = "";
+        stepCount = 0;
+        taskDone = 0;
+        uid = user.getUid();
+    }
+
     public DailyData(double distanceWalked, String finishTime, int stepCount, int taskDone, String uid) {
         this.distanceWalked = distanceWalked;
         this.finishTime = finishTime;

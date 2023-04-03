@@ -19,7 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 public class Dashboard extends AppCompatActivity {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
-    private FirebaseManager fypDB = FirebaseManager.getInstance();
+    private FirebaseDBManager fypDB = FirebaseDBManager.getInstance();
     private DatabaseReference databaseRef = fypDB.getDatabaseRef();
     private DatabaseReference currentUserRef;
 

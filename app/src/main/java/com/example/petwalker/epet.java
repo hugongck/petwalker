@@ -13,7 +13,6 @@ import android.hardware.SensorManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -30,7 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 public class epet extends AppCompatActivity implements SensorEventListener {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
-    private FirebaseManager fypDB = FirebaseManager.getInstance();
+    private FirebaseDBManager fypDB = FirebaseDBManager.getInstance();
     private DatabaseReference databaseRef = fypDB.getDatabaseRef();
     private DatabaseReference currentUserRef;
 

@@ -1,13 +1,17 @@
 package com.example.petwalker;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -128,9 +132,29 @@ public class HealthReport extends AppCompatActivity {
             }
         });
 
+        changeAlert("good");
 
         BarChart barChart = findViewById(R.id.barChart);
         setupBarChart(barChart);
+    }
+
+    private void changeAlert(String alert) {
+        ConstraintLayout constraintLayout = findViewById(R.id.constraintLayout_alert);
+        ImageView imageView = findViewById(R.id.img_alert);
+        TextView textView = findViewById(R.id.txt_alert);
+        if (alert == "bad"){
+            // Bad Alert
+            constraintLayout.setBackgroundColor(Color.parseColor("#000000"));
+            imageView.setImageResource(R.drawable.color_alert);
+            textView.setTextColor(Color.parseColor("#5CF6DB"));
+            textView.setText("You walk "+" steps fewer than last month.");
+        } else if (alert == "good"){
+            // Good Alert
+            constraintLayout.setBackground(getResources().getDrawable(R.drawable.box));
+            imageView.setImageResource(R.drawable.black_tick);
+            textView.setTextColor(Color.parseColor("#000000"));
+            textView.setText("You walk "+" steps more than yesterday.");
+        }
     }
 
     private void setupBarChart(BarChart barChart) {

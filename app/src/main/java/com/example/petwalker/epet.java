@@ -139,6 +139,7 @@ public class epet extends AppCompatActivity implements SensorEventListener {
             int progressValue = (int) ((float)stepCount/2000*100); // Set the progress value here
             progressBar.setProgress(progressValue);
             if (progressValue >= 100) {
+                textViewStepCounter.setText("Completed");
                 progressBar.setIndicatorColor(Color.parseColor("#5CF6DB"));
             }
         }

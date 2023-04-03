@@ -1,21 +1,23 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
-admin.initializeApp();
+const serviceAccount = require("./serviceAccountKey.json");
 
-const databaseUrl = functions.config().database.url;
-admin.database().ref().child("info").set(databaseUrl);
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://fyp-2023-fad2a-default-rtdb.asia-southeast1.firebasedatabase.app",
+});
 
 exports.createDailyDataForUsers = functions.pubsub
-    .schedule("0 0 * * *")
+    .schedule("10 11 * * *")
     .onRun(async (context) => {
       try {
         // Get the current date and time
-        const now = new Date();
+        const now = new Date(Date.now());
         const year = now.getFullYear();
         const month = now.getMonth() + 1;
         const day = now.getDate();
-        const dateString = `${year}-${month}-${day}`;
+        const dateString = `${year}-${month}-${day + 1}`;
 
         // Get a list of UIDs from the "users" directory
         const usersRef = admin.database().ref("/users");
@@ -27,7 +29,7 @@ exports.createDailyDataForUsers = functions.pubsub
         const promises = uids.map(async (uid) => {
           const userDailyDataRef = admin
               .database()
-              .ref(`/users/${uid}/daily_data/${dateString}`);
+              .ref(`/daily_data/${dateString}/${uid}`);
           const dailyData = {
             uid: uid,
             stepCount: 0,

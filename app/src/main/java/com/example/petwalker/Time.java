@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Time {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String DATE_FORMAT = "yyyy-M-d";
     private static final String TIME_FORMAT = "HH:mm:ss";
 
     public static String getCurrentDate() {

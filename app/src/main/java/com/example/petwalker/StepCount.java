@@ -225,7 +225,7 @@ public class StepCount extends AppCompatActivity implements SensorEventListener 
         long seconds = (milliseconds / 1000) % 60;
         long minutes = (milliseconds / (1000 * 60)) % 60;
         long hours = (milliseconds / (1000 * 60 * 60)) % 24;
-        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
+        return String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
     }
 
     private float getStepLength(int userAge, double userHeight, String userGender){

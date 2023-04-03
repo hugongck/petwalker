@@ -73,7 +73,7 @@
             android:name=".newUserEnterInfo"
             android:exported="false" />
         <activity
-            android:name=".StepCount"
+            android:name=".StepCountActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

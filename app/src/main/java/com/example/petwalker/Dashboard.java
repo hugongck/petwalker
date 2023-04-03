@@ -90,7 +90,7 @@ public class Dashboard extends AppCompatActivity {
         btn_stepCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Dashboard.this, StepCount.class);
+                Intent intent = new Intent(Dashboard.this, StepCountActivity.class);
                 startActivity(intent);
             }
         });

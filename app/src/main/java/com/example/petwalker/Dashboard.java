@@ -37,7 +37,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get the user data from the snapshot
-                User currentUserData = dataSnapshot.getValue(User.class);
+                currentUserData = dataSnapshot.getValue(User.class);
 
                 // Use the retrieved values as needed
                 //Greeting message

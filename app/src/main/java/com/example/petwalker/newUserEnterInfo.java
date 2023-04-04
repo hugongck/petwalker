@@ -13,7 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 public class newUserEnterInfo extends AppCompatActivity {
 
     private Button btn_letsStart;
-    private EditText userAgeInput, userWeightInput;
+    private EditText userAgeInput, userHeightInput;
     private Spinner userGenderInput;
 
     private FirebaseDBManager fypDB = FirebaseDBManager.getInstance();
@@ -41,7 +41,7 @@ public class newUserEnterInfo extends AppCompatActivity {
 
         userAgeInput = findViewById(R.id.editTextNumber_age);
         userGenderInput = findViewById(R.id.spinner_gender);
-        userWeightInput = findViewById(R.id.editTextNumberDecimal_weight);
+        userHeightInput = findViewById(R.id.editTextNumberDecimal_height);
 
         Bundle userDataBundle = getIntent().getExtras();
         String currentUid = userDataBundle.getString("uid");
@@ -54,11 +54,11 @@ public class newUserEnterInfo extends AppCompatActivity {
                 //upload user's info to database
                 int userAge = Integer.parseInt(userAgeInput.getText().toString());
                 String userGender = userGenderInput.getSelectedItem().toString();
-                double userWeight = Double.parseDouble(userWeightInput.getText().toString());
+                double userHeight = Double.parseDouble(userHeightInput.getText().toString());
 
                 userRef.child(currentUid).child("age").setValue(userAge);
                 userRef.child(currentUid).child("gender").setValue(userGender);
-                userRef.child(currentUid).child("weight").setValue(userWeight);
+                userRef.child(currentUid).child("height").setValue(userHeight);
 
                 Intent intent = new Intent(newUserEnterInfo.this, Dashboard.class);
                 startActivity(intent);

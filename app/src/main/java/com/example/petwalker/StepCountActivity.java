@@ -41,7 +41,7 @@ public class StepCountActivity extends AppCompatActivity{
         dailyDataRef = databaseRef.child("daily_data").child(Time.getCurrentDate()).child(uid);
 
         //create stepCounter.java object
-        stepCounter = new StepCounter(this);
+        stepCounter = new StepCounter(this, dailyDataRef);
         if (stepCounter.stepSensor == null) {
             Toast.makeText(this, "Step sensor not available on this device", Toast.LENGTH_SHORT).show();
         } else {
@@ -76,23 +76,12 @@ public class StepCountActivity extends AppCompatActivity{
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-
-                // Loop through the children of the dataSnapshot to retrieve each DailyData object
-                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    // Retrieve the DailyData object as a HashMap
-                    HashMap<String, Object> dailyDataMap = (HashMap<String, Object>) childSnapshot.getValue();
-
-                    // Create a new DailyData object from the HashMap
-                    DailyData dailyData = new DailyData(
-                            (double) dailyDataMap.get("distanceWalked"),
-                            (String) dailyDataMap.get("finishTime"),
-                            ((Long) dailyDataMap.get("stepCount")).intValue(),
-                            ((Long) dailyDataMap.get("taskDone")).intValue(),
-                            (String) dailyDataMap.get("uid")
-                    );
-
-                    // Do something with the DailyData object
-                    // ...
+                DailyData dailyData = dataSnapshot.getValue(DailyData.class);
+                if (dailyData != null) {
+                    // Do something with the daily data
+                    stepCounter.stepCount = dailyData.getStepCount();
+                    stepCounter.totalDistance = dailyData.getDistanceWalked();
+                    stepCounter.taskDone = dailyData.getTaskDone();
                 }
             }
 
@@ -103,6 +92,7 @@ public class StepCountActivity extends AppCompatActivity{
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
+
 
 
         // Hide the status bar.

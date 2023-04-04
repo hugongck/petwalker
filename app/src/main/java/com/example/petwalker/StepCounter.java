@@ -14,14 +14,17 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.firebase.database.DatabaseReference;
 
 import java.text.BreakIterator;
 import java.util.Locale;
 
 public class StepCounter implements SensorEventListener {
     Activity currentActivity;
-    int stepCount, previousStepCount, taskStep, taskDistance, taskTime;
-    float stepLength, totalDistance;
+    private DatabaseReference dailyDataRef;
+
+    int stepCount, previousStepCount, taskStep, taskDistance, taskTime, taskDone;
+    double stepLength, totalDistance;
     long previousTime, totalTimeWalked;
     SensorEvent sensorEvent;
     SensorManager sensorManager;
@@ -35,8 +38,9 @@ public class StepCounter implements SensorEventListener {
     private TextView txtTargetTas;
     TextView txtTotalStep;
 
-    public StepCounter(Activity activity) {
+    public StepCounter(Activity activity, DatabaseReference dailyDataRef) {
         currentActivity = activity;
+        this.dailyDataRef = dailyDataRef;
         sensorManager = (SensorManager) currentActivity.getSystemService(Context.SENSOR_SERVICE);
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         txtTotalStep = currentActivity.findViewById(R.id.txt_total_step);
@@ -68,6 +72,11 @@ public class StepCounter implements SensorEventListener {
             totalDistance = steps * stepLength;
             previousStepCount = stepCount;
             previousTime = currentTime;
+
+            // Update user's daily data to Realtime Database
+            dailyDataRef.child("stepCount").setValue(stepCount);
+            dailyDataRef.child("totalDistance").setValue(totalDistance);
+            dailyDataRef.child("totalTimeWalked").setValue(totalTimeWalked);
             // Task
             //changeTaskCard("time", checkTimeTask());
             //changeTaskCard("distance", checkDistanceTask());

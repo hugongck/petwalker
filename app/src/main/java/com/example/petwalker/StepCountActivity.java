@@ -1,31 +1,21 @@
 package com.example.petwalker;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-
-import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import java.util.HashMap;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class StepCountActivity extends AppCompatActivity{
     private TextView txtStepCountBox, txtWalkedStep, txtTimeCountBox, txtDistanceCountBox, txtTotalStep, txtSteps, txtTimeTask, txtDistanceTask;
@@ -37,12 +27,11 @@ public class StepCountActivity extends AppCompatActivity{
     private int taskTime = 150;
     private float walkedDistance = 0f;
 
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
-    private FirebaseDBManager fypDB = FirebaseDBManager.getInstance();
-    private DatabaseReference databaseRef = fypDB.getDatabaseRef();
-    private DatabaseReference currentUserRef;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-    private User currentUserData = new User();
+    private DailyData dailyData;
+    private User currentUser;
+    private int dataLoadedCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +42,27 @@ public class StepCountActivity extends AppCompatActivity{
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
+
+        txtStepCountBox = findViewById(R.id.txt_step_count_box);
+        txtWalkedStep = findViewById(R.id.txt_walked_step);
+        txtTimeCountBox = findViewById(R.id.txt_time_count_box);
+        txtDistanceCountBox = findViewById(R.id.txt_distance_count_box);
+        txtTotalStep = findViewById(R.id.txt_total_step);
+        txtSteps = findViewById(R.id.txt_steps);
+        txtTimeTask = findViewById(R.id.txt_time_task);
+        txtDistanceTask = findViewById(R.id.txt_distance_task);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if(sensorManager == null) {
+            // Handle the case where the system is not able to obtain a reference to the SENSOR_SERVICE
+            txtStepCountBox.setText(String.valueOf("-"));
+            txtWalkedStep.setText(String.valueOf("-"));
+            updateProgressBar(0,0);
+            txtDistanceCountBox.setText(String.format("%.1f", "-"+"m"));
+        } else {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        }
 
         // Back button
         Button btn_back = findViewById(R.id.btn_back);
@@ -73,30 +83,60 @@ public class StepCountActivity extends AppCompatActivity{
             }
         });
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        // Get the current user
+        currentUser = new User(mAuth.getUid(), new User.UserLoadedCallback() {
+            @Override
+            public void onUserLoaded(User user) {
+                // Increment the dataLoadedCount
+                dataLoadedCount++;
 
-        txtStepCountBox = findViewById(R.id.txt_step_count_box);
-        txtWalkedStep = findViewById(R.id.txt_walked_step);
-        txtTimeCountBox = findViewById(R.id.txt_time_count_box);
-        txtDistanceCountBox = findViewById(R.id.txt_distance_count_box);
-        txtTotalStep = findViewById(R.id.txt_total_step);
-        txtSteps = findViewById(R.id.txt_steps);
-        txtTimeTask = findViewById(R.id.txt_time_task);
-        txtDistanceTask = findViewById(R.id.txt_distance_task);
+                // Check if both data objects have been loaded
+                //if (dataLoadedCount == 2) {
+                    //usingStepDetector(dailyData, currentUser);
+               // }
+                // Get the daily data for the current day
+                String today = Time.getCurrentDate();
+                String msg="";
+                Log.d(msg, today);
+                Log.d(msg, mAuth.getUid());
+                dailyData = new DailyData(mAuth.getUid(), today, new DailyData.DataLoadedCallback() {
+                    @Override
+                    public void onDataLoaded(DailyData data) {
+                        // Increment the dataLoadedCount
+                        dataLoadedCount++;
+                        String msg="";
+                        Log.d(msg, data.getUid());
+                        Log.d(msg, String.valueOf(data.getStepCount()));
+                        // Check if both data objects have been loaded
+                        if (dataLoadedCount == 2) {
+                            usingStepDetector(dailyData, currentUser);
+                        }
+                    }
+                });
+            }
+        });
+    }
 
+    private void usingStepDetector(DailyData data, User user){
         stepDetector = new StepDetector();
+
+        //initialize UI with daily data
+        txtStepCountBox.setText(String.valueOf(data.getStepCount()));
+        txtWalkedStep.setText(String.valueOf(data.getStepCount()));
+        updateProgressBar(data.getStepCount(),getTaskStep(user.getAge()));
+        txtDistanceCountBox.setText(String.format("%.1f", data.getDistanceWalked())+"m");
+
+
         stepDetector.setOnStepListener(stepCount -> {
             // Update UI of step count box
             txtStepCountBox.setText(String.valueOf(stepCount));
 
             // Update UI of progress bar
             txtWalkedStep.setText(String.valueOf(stepCount));
-            updateProgressBar(stepCount,getTaskStep(50));
+            updateProgressBar(stepCount,getTaskStep(user.getAge()));
 
             // Update UI of distance count box
-            stepLength = getStepLength(50,160,"Male");
+            stepLength = getStepLength(user.getAge(),user.getHeight(), user.getGender());
             walkedDistance = stepCount * stepLength;
             txtDistanceCountBox.setText(String.format("%.1f", walkedDistance)+"m");
 
@@ -107,12 +147,11 @@ public class StepCountActivity extends AppCompatActivity{
                     (int) (elapsedTime % 60000 / 1000)));
 
             // Update UI of Task
-            initTaskCard(taskTime, getTaskDistance(50));
+            initTaskCard(taskTime, getTaskDistance(user.getAge()));
             changeTaskCard("time", checkTimeTask());
             changeTaskCard("distance", checkDistanceTask());
             changeTaskCard("target", checkTargetTask());
         });
-
     }
 
     @Override

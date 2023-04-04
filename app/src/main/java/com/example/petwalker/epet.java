@@ -1,6 +1,7 @@
 package com.example.petwalker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
@@ -16,9 +17,11 @@ import android.view.WindowManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-public class epet extends AppCompatActivity implements SensorEventListener {
+public class epet extends AppCompatActivity {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
     private FirebaseDBManager fypDB = FirebaseDBManager.getInstance();
@@ -40,6 +43,11 @@ public class epet extends AppCompatActivity implements SensorEventListener {
     private Sensor mStepCounter;
     private boolean isCounterSensorPresent;
     int stepCount = 0;
+
+    private TextView txtStep, txtWalkedStep, txtTimeCountBox, txtDistanceCountBox, txtTotalStep, txtSteps, txtTimeTask, txtDistanceTask;
+    private StepDetector stepDetector;
+    private Sensor accelerometer, gyroscope;
+    private float walkedDistance = 0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,62 +113,71 @@ public class epet extends AppCompatActivity implements SensorEventListener {
         });
 
         //step count
-        if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){ //ask for permission
-            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
-        }
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        textViewStepCounter = findViewById(R.id.textView2);
-
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        if(sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null)
-        {
-            mStepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-            isCounterSensorPresent = true;
-        }
-        else
-        {
-            textViewStepCounter.setText("-/2000");
-            isCounterSensorPresent = false;
-        }
+        txtStep = findViewById(R.id.textView2);
 
-    }
+        stepDetector = new StepDetector();
+        stepDetector.setOnStepListener(stepCount -> {
 
-    @Override
-    public void onSensorChanged(SensorEvent sensorevent) {
-        if(sensorevent.sensor == mStepCounter)
-        {
-            stepCount = (int) sensorevent.values[0];
-            textViewStepCounter.setText(String.valueOf(stepCount)+"/2000");
-            //progress bar
-            LinearProgressIndicator progressBar = findViewById(R.id.progress_bar);
-            int progressValue = (int) ((float)stepCount/2000*100); // Set the progress value here
-            progressBar.setProgress(progressValue);
-            if (progressValue >= 100) {
-                textViewStepCounter.setText("Completed");
-                progressBar.setIndicatorColor(Color.parseColor("#5CF6DB"));
-            }
-        }
-    }
+            // Update UI
+            updateProgressBar(stepCount, getTaskStep(50));
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        });
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null)
-            sensorManager.registerListener(this, mStepCounter, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(stepDetector, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(stepDetector, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null)
-            sensorManager.unregisterListener(this, mStepCounter);
+        sensorManager.unregisterListener(stepDetector);
+    }
+
+    public static int getTaskStep(int userAge) {
+        int taskStep = 0;
+        if (userAge <= 49) {
+            taskStep = 10000;
+        } else if (userAge >= 50 && userAge <= 59) {
+            taskStep = 8000;
+        } else if (userAge >= 60 && userAge <= 69) {
+            taskStep = 7000;
+        } else if (userAge >= 70 && userAge <= 79) {
+            taskStep = 6000;
+        } else if (userAge >= 80) {
+            taskStep = 5000;
+        }
+        return taskStep;
+
+        /*
+        Reference:
+
+        Tudor-Locke, C., Craig, C. L., Brown, W. J., Clemes, S. A., De Cocker, K., Giles-Corti, B., ... & Blair, S. N. (2011). How many steps/day are enough for adults?. International Journal of Behavioral Nutrition and Physical Activity, 8(1), 79. https://doi.org/10.1186/1479-5868-8-79
+
+        Lee, I. M., Shiroma, E. J., & Lobelo, F. (2012). Pedometer-based physical activity interventions: a meta-analysis. American Journal of Preventive Medicine, 43(3), 340-349. https://doi.org/10.1016/j.amepre.2012.05.006
+
+        Bassett Jr, D. R., Wyatt, H. R., Thompson, H., & Peters, J. C. (2010). Hill JO. Pedometer-measured physical activity and health behaviors in US adults. Medicine and science in sports and exercise, 42(10), 1819-1825. https://doi.org/10.1249/MSS.0b013e3181dc2e54
+        */
+
+    }
+
+    private void updateProgressBar(int stepCount, int taskStep) {
+        LinearProgressIndicator progressBar = findViewById(R.id.progress_bar);
+        int progressValue = (int) ((float)stepCount/taskStep*100); // Set the progress value here
+        progressBar.setProgress(progressValue);
+        txtStep.setText(String.valueOf(stepCount)+"/"+getTaskStep(50));
+        if (progressValue >= 100) {
+            txtStep.setText("Completed");
+            progressBar.setIndicatorColor(Color.parseColor("#5CF6DB"));
+        }
     }
 
 }

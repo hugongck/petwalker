@@ -141,7 +141,7 @@ public class StepCountActivity extends AppCompatActivity{
 
     private void setStepCounterWithUserData(User currentUser){
         // Assign the retrieved values from currentUserRef as needed
-        stepCounter.stepLength = StepCounter.getStepLength(currentUser.getAge(), currentUser.getWeight(), currentUser.getGender());
+        stepCounter.stepLength = StepCounter.getStepLength(currentUser.getAge(), currentUser.getHeight(), currentUser.getGender());
         stepCounter.taskStep = StepCounter.getTaskStep(currentUser.getAge());
         stepCounter.taskDistance = StepCounter.getTaskDistance(currentUser.getAge());
         stepCounter.txtTotalStep.setText("/"+Integer.toString(stepCounter.taskStep));

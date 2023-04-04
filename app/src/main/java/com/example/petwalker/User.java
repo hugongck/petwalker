@@ -71,11 +71,11 @@ public class User {
         this.age = age;
     }
 
-    public double getWeight() {
+    public double getHeight() {
         return height;
     }
 
-    public void setWeight(double height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 

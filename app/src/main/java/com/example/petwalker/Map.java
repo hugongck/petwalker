@@ -11,13 +11,14 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -35,37 +36,12 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.Polyline;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
 public class Map extends AppCompatActivity implements LocationListener {
-    private TextView txtStepCountBox, txtTimeCountBox, txtDistanceCountBox, txtTimeTask, txtDistanceTask;
+    private TextView txtStepCountBox, txtTimeCountBox, txtDistanceCountBox, txtTimeTask, txtTimeTask2, txtDistanceTask, txtDistanceTask2,  txtTargetTask, txtTargetTask2;
     private StepDetector stepDetector;
     private SensorManager sensorManager;
     private Sensor accelerometer, gyroscope;
@@ -486,18 +462,22 @@ public class Map extends AppCompatActivity implements LocationListener {
             imageView = findViewById(R.id.img_time_task);
             textView = findViewById(R.id.txt_time_task);
             textView2 = findViewById(R.id.txt_time_task2);
+            textView2.setText("walk");
         } else if (task.equals("distance")) {
             // Distance
             constraintLayout = findViewById(R.id.constraintLayout_distance_task);
             imageView = findViewById(R.id.img_distance_task);
             textView = findViewById(R.id.txt_distance_task);
             textView2 = findViewById(R.id.txt_distance_task2);
+            textView2.setText("walk");
         } else if (task.equals("target")) {
             // Target
             constraintLayout = findViewById(R.id.constraintLayout_target_task);
             imageView = findViewById(R.id.img_target_task);
             textView = findViewById(R.id.txt_target_task);
             textView2 = findViewById(R.id.txt_target_task2);
+            textView.setText("Target");
+            textView2.setText("Area");
         }
 
         if (isTaskDone) {

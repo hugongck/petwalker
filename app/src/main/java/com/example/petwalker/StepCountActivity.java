@@ -305,18 +305,22 @@ public class StepCountActivity extends AppCompatActivity{
             imageView = findViewById(R.id.img_time_task);
             textView = findViewById(R.id.txt_time_task);
             textView2 = findViewById(R.id.txt_time_task2);
+            textView2.setText("walk");
         } else if (task.equals("distance")) {
             // Distance
             constraintLayout = findViewById(R.id.constraintLayout_distance_task);
             imageView = findViewById(R.id.img_distance_task);
             textView = findViewById(R.id.txt_distance_task);
             textView2 = findViewById(R.id.txt_distance_task2);
+            textView2.setText("walk");
         } else if (task.equals("target")) {
             // Target
             constraintLayout = findViewById(R.id.constraintLayout_target_task);
             imageView = findViewById(R.id.img_target_task);
             textView = findViewById(R.id.txt_target_task);
             textView2 = findViewById(R.id.txt_target_task2);
+            textView.setText("Target");
+            textView2.setText("Area");
         }
 
         if (isTaskDone) {

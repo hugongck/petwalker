@@ -53,6 +53,7 @@ public class StepCountActivity extends AppCompatActivity{
         txtDistanceTask = findViewById(R.id.txt_distance_task);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        stepDetector = new StepDetector();
         if(sensorManager == null) {
             // Handle the case where the system is not able to obtain a reference to the SENSOR_SERVICE
             txtStepCountBox.setText(String.valueOf("-"));
@@ -115,10 +116,11 @@ public class StepCountActivity extends AppCompatActivity{
                 });
             }
         });
+        sensorManager.registerListener(stepDetector, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(stepDetector, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     private void usingStepDetector(DailyData data, User user){
-        stepDetector = new StepDetector();
 
         //initialize UI with daily data
         txtStepCountBox.setText(String.valueOf(data.getStepCount()));
@@ -128,6 +130,8 @@ public class StepCountActivity extends AppCompatActivity{
 
 
         stepDetector.setOnStepListener(stepCount -> {
+            String msg = "";
+            Log.d(msg, "Step Detected");
             // Update UI of step count box
             txtStepCountBox.setText(String.valueOf(stepCount));
 

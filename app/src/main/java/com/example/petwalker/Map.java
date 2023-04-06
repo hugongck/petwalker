@@ -73,6 +73,8 @@ public class Map extends AppCompatActivity implements LocationListener {
     private float stepLength = 0.66f; // In meters, you can customize this value
     private int taskTime = 150;
     private float walkedDistance = 0f;
+    public double taskLat = 0.0;
+    public double taskLon = 0.0;
     private boolean targetTaskRefreshed = true;
 
     private MapView map;
@@ -196,14 +198,14 @@ public class Map extends AppCompatActivity implements LocationListener {
                     /**
                      * TODO: get from database
                      * */
-                    double taskLat = 0.0; //change get from database
-                    double taskLon = 0.0; //change get from database
                     targetTaskRefreshed = false; //change get from database
-                    if (!targetTaskRefreshed) {
+                    if (!targetTaskRefreshed) {/*
                         double latOffset = getRandomOffset(0.003);
                         double lonOffset = getRandomOffset(0.003);
                         taskLat = location.getLatitude() + latOffset; // update to database
-                        taskLon = location.getLongitude() + lonOffset; // update to database
+                        taskLon = location.getLongitude() + lonOffset; // update to database*/
+                        getTaskGeo();
+
                         targetTaskRefreshed = true; // update to database
                         /**
                          *  TODO: update to database
@@ -261,6 +263,30 @@ public class Map extends AppCompatActivity implements LocationListener {
                 }
             }, null);
         }
+
+    }
+
+    public void getTaskGeo() {
+        // Generate a random number
+        Random random = new Random();
+        int randomInt = random.nextInt(4);
+        if (randomInt == 0) {
+            // Piazza
+            taskLat = 22.3375;
+            taskLon = 114.2630;
+        } else if (randomInt == 1) {
+            // Shaw
+            taskLat = 22.3337;
+            taskLon = 114.2633;
+        } else if (randomInt == 2) {
+            // Seafront
+            taskLat = 22.3379;
+            taskLon = 114.2691;
+        } else if (randomInt == 3) {
+            // BridgeLink
+            taskLat = 22.3375;
+            taskLon = 114.2656;
+        }
     }
 
     private double getRandomOffset(double offset) {
@@ -272,7 +298,6 @@ public class Map extends AppCompatActivity implements LocationListener {
         if (randomOffset > (-(offset / 3)) && randomOffset < (offset / 3)) {
             randomOffset = random.nextBoolean() ? (-(offset / 3)) : offset/3;
         }
-        Toast.makeText(this, "offset: "+offset+" random: "+randomOffset, Toast.LENGTH_SHORT).show();
         return randomOffset;
     }
 

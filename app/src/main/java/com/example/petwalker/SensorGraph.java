@@ -30,6 +30,10 @@ public class SensorGraph extends AppCompatActivity implements SensorEventListene
     private Sensor mAccelerometer;
     private  Sensor sensors;
     public int stepCount1, stepCount2, stepCount3, stepCount4;
+    public boolean changedColor1 = false;
+    public boolean changedColor2 = false;
+    public boolean changedColor3 = false;
+    public boolean changedColor4 = false;
     private float[] lastAccelerometer2 = new float[3];
     private float[] lastAccelerometer3 = new float[3];
     private float[] lastAccelerometer4 = new float[3];
@@ -352,6 +356,13 @@ public class SensorGraph extends AppCompatActivity implements SensorEventListene
                 // Step Count
                 if (magnitude1 > STEP_THRESHOLD && (currentTime1 - lastStepTime1) > STEP_TIME_THRESHOLD) {
                     stepCount1++;
+                    if (changedColor1) {
+                        ((LineDataSet) set1).setColor(Color.parseColor("#000000"));
+                        changedColor1 = !changedColor1;
+                    } else {
+                        ((LineDataSet) set1).setColor(Color.parseColor("#5CF6DB"));
+                        changedColor1 = !changedColor1;
+                    }
                     mChart1.getDescription().setText("Step Count: "+String.valueOf(stepCount1));
                     lastStepTime1 = currentTime1;
                 }
@@ -394,6 +405,13 @@ public class SensorGraph extends AppCompatActivity implements SensorEventListene
                 // Step Count
                 if (magnitude2 > STEP_THRESHOLD && (currentTime2 - lastStepTime2) > STEP_TIME_THRESHOLD) {
                     stepCount2++;
+                    if (changedColor2) {
+                        ((LineDataSet) set2).setColor(Color.parseColor("#000000"));
+                        changedColor2 = !changedColor2;
+                    } else {
+                        ((LineDataSet) set2).setColor(Color.parseColor("#5CF6DB"));
+                        changedColor2 = !changedColor2;
+                    }
                     mChart2.getDescription().setText("Step Count: "+String.valueOf(stepCount2));
                     lastStepTime2 = currentTime2;
                 }
@@ -436,6 +454,13 @@ public class SensorGraph extends AppCompatActivity implements SensorEventListene
                 // Step Count
                 if (logMagnitude3 > STEP_THRESHOLD && (currentTime3 - lastStepTime3) > STEP_TIME_THRESHOLD) {
                     stepCount3++;
+                    if (changedColor3) {
+                        ((LineDataSet) set3).setColor(Color.parseColor("#000000"));
+                        changedColor3 = !changedColor3;
+                    } else {
+                        ((LineDataSet) set3).setColor(Color.parseColor("#5CF6DB"));
+                        changedColor3 = !changedColor3;
+                    }
                     mChart3.getDescription().setText("Step Count: "+String.valueOf(stepCount3));
                     lastStepTime3 = currentTime3;
                 }
@@ -495,6 +520,13 @@ public class SensorGraph extends AppCompatActivity implements SensorEventListene
                     if (lastLogMagnitude != -1 && logMagnitude4 > lastLogMagnitude) {
                         stepCount4++;
                         mChart4.getDescription().setText("Step Count: "+String.valueOf(stepCount4));
+                        if (changedColor4) {
+                            ((LineDataSet) set4).setColor(Color.parseColor("#000000"));
+                            changedColor4 = !changedColor4;
+                        } else {
+                            ((LineDataSet) set4).setColor(Color.parseColor("#5CF6DB"));
+                            changedColor4 = !changedColor4;
+                        }
                     }
                 }
                 lastLogMagnitude = logMagnitude4;
@@ -529,7 +561,7 @@ public class SensorGraph extends AppCompatActivity implements SensorEventListene
         LineDataSet set = new LineDataSet(null, txt);
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set.setLineWidth(3f);
-        set.setColor(Color.CYAN);
+        set.setColor(Color.parseColor("#000000"));
         set.setHighlightEnabled(false);
         set.setDrawValues(false);
         set.setDrawCircles(false);

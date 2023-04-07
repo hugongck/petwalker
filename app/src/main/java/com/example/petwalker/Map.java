@@ -197,12 +197,15 @@ public class Map extends AppCompatActivity implements LocationListener {
                     geoPoints.add(startPoint);
                     geoPoints.add(endPoint);
 
+/*
+                    // Draw route line
                     Polyline routeLine = new Polyline();
                     routeLine.setPoints(geoPoints);
                     routeLine.setColor(getResources().getColor(R.color.black));
                     routeLine.setWidth(10);
                     map.getOverlays().add(routeLine);
                     map.invalidate();
+*/
 
                     /**
                      * TODO: get from database
@@ -505,7 +508,7 @@ public class Map extends AppCompatActivity implements LocationListener {
         Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
                 targetPoint.getLatitude(), targetPoint.getLongitude(), results);
         float distanceInMeters = results[0];
-        return distanceInMeters <= 100; // within 100 meter
+        return distanceInMeters <= 200; // in meter
         /**
          * Update to database (isTargetTaskDone)
          * */

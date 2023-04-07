@@ -18,9 +18,9 @@ public class StepDetector implements SensorEventListener {
     private static final float ALPHA = 0.8f; // Low-pass filter smoothing factor 1.0 = direct 0.0 = smoothest
 
     // Peak detection parameters
-    private static final double PEAK_HEIGHT_THRESHOLD = 1.1; // higher means need larger movement
-    private static final long PEAK_WIDTH_THRESHOLD = 300; // in milliseconds
-    private static final long PEAK_INTERVAL_THRESHOLD = 500; // in milliseconds
+    private static final double PEAK_HEIGHT_THRESHOLD = 1.2; // higher means need larger movement
+    private static final long PEAK_WIDTH_THRESHOLD = 250; // in milliseconds
+    private static final long PEAK_INTERVAL_THRESHOLD = 450; // in milliseconds
     private long lastPeakTime = 0;
     private double lastLogMagnitude = -1;
     private long potentialPeakStartTime = -1;

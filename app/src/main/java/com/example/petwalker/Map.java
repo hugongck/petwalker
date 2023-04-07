@@ -146,11 +146,6 @@ public class Map extends AppCompatActivity implements LocationListener {
         locationOverlay.enableMyLocation();
         locationOverlay.enableFollowLocation();
 
-        // Change the location marker image
-        Drawable currentLocationMarker = getResources().getDrawable(R.drawable.user_marker);
-        Bitmap currentLocationBitmap = ((BitmapDrawable) currentLocationMarker).getBitmap();
-        locationOverlay.setPersonIcon(Bitmap.createScaledBitmap(currentLocationBitmap, 100, 150, true));
-
         map.getOverlays().add(locationOverlay);
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -194,12 +189,6 @@ public class Map extends AppCompatActivity implements LocationListener {
                     GeoPoint endPoint = new GeoPoint(taskLat, taskLon);
                     Marker destinationMarker = new Marker(map);
 
-                    /*
-                    // Change the marker image
-                    Drawable markerIcon = getResources().getDrawable(R.drawable.pin_marker);
-                    Bitmap markerBitmap = ((BitmapDrawable) markerIcon).getBitmap();
-                    destinationMarker.setIcon(new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(markerBitmap, 100, 176, true)));
-                    */
                     destinationMarker.setPosition(endPoint);
                     destinationMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                     map.getOverlays().add(destinationMarker);

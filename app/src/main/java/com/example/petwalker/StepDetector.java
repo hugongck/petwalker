@@ -3,19 +3,17 @@ package com.example.petwalker;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 
 public class StepDetector implements SensorEventListener {
 
     private long lastStepTime;
     private float[] lastAccelerometer = new float[3];
-    private float[] lastGyroscope = new float[3];
     private int stepCount;
 
     // Step detection parameters
     private static final float STEP_THRESHOLD = 0.9f;
     private static final long STEP_TIME_THRESHOLD = 400;
-    private static final float ALPHA = 0.8f; // Low-pass filter smoothing factor 1.0 = direct 0.0 = smoothest
+    private static final float ALPHA = 0.8f; // Low-pass filter smoothing factor ( lower >> smoother )
 
     // Peak detection parameters
     private static final double PEAK_HEIGHT_THRESHOLD = 1.2; // higher means need larger movement
@@ -47,8 +45,6 @@ public class StepDetector implements SensorEventListener {
 
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             lowPassFilter(event.values, lastAccelerometer);
-        } else if (sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            lowPassFilter(event.values, lastGyroscope);
         }
 
         // Calculate the magnitude of the acceleration vector

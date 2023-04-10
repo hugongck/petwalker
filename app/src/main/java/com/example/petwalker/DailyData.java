@@ -9,6 +9,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class DailyData {
     private double distanceWalked;
+    private double taskLatitude;
+    private double taskLongitude;
     private String finishTime;
     private int stepCount;
     private int taskDone;
@@ -27,8 +29,21 @@ public class DailyData {
         finishTime = "";
         stepCount = 0;
         taskDone = 0;
+        taskLatitude = 0.0;
+        taskLongitude = 0.0;
         uid = "na";
     }
+
+    public DailyData(double distanceWalked, String finishTime, int stepCount, int taskDone, double taskLatitude, double taskLongitude, String uid) {
+        this.distanceWalked = distanceWalked;
+        this.finishTime = finishTime;
+        this.stepCount = stepCount;
+        this.taskDone = taskDone;
+        this.taskLatitude = taskLatitude;
+        this.taskLongitude = taskLongitude;
+        this.uid = uid;
+    }
+
 
     public DailyData(String userid, String today, DataLoadedCallback callback) {
         DatabaseReference todayData = dailyDataRef.child(today).child(userid);

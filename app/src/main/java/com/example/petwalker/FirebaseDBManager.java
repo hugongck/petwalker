@@ -8,7 +8,7 @@ public class FirebaseDBManager {
     private static FirebaseDBManager instance;
     private DatabaseReference dBRef;
 
-    private FirebaseDBManager() {
+    FirebaseDBManager() {
         dBRef = FirebaseDatabase.getInstance("https://fyp-2023-fad2a-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
     }
 

@@ -14,6 +14,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -48,6 +49,7 @@ public class Map extends AppCompatActivity implements LocationListener {
     private long startTime, elapsedTime;
     private float stepLength = 0.66f; // In meters, you can customize this value
     private int taskTime = 150;
+    int stepCount = 0;
     private float walkedDistance = 0f;
     public double taskLat = 0.0;
     public double taskLon = 0.0;
@@ -59,12 +61,11 @@ public class Map extends AppCompatActivity implements LocationListener {
 
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    ;
-    private FirebaseDBManager fypDB = FirebaseDBManager.getInstance();
-    private DatabaseReference databaseRef = fypDB.getDatabaseRef();
-    private DatabaseReference currentUserRef;
+    FirebaseDBManager fypDB = new FirebaseDBManager();
 
-    private User currentUserData = new User();
+    private DailyData dailyData;
+    private User currentUser;
+    private int dataLoadedCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,15 +114,71 @@ public class Map extends AppCompatActivity implements LocationListener {
         txtTimeTask = findViewById(R.id.txt_time_task);
         txtDistanceTask = findViewById(R.id.txt_distance_task);
 
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         stepDetector = new StepDetector();
+
+        if(sensorManager == null || stepDetector == null) {
+            // Handle the case where the system is not able to obtain a reference to the SENSOR_SERVICE
+            txtStepCountBox.setText(String.valueOf("-"));
+            txtTimeCountBox.setText(String.valueOf("-"));
+            txtDistanceCountBox.setText(String.format("%.1f", "-"+"m"));
+        } else {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        }
+
+        // Get the current user
+        currentUser = new User(mAuth.getUid(), new User.UserLoadedCallback() {
+            @Override
+            public void onUserLoaded(User user) {
+                // Increment the dataLoadedCount
+                dataLoadedCount++;
+
+                // Check if both data objects have been loaded
+                //if (dataLoadedCount == 2) {
+                //usingStepDetector(dailyData, currentUser);
+                // }
+                // Get the daily data for the current day
+                String today = Time.getCurrentDate();
+                String msg="";
+                Log.d(msg, today);
+                Log.d(msg, mAuth.getUid());
+                dailyData = new DailyData(mAuth.getUid(), today, new DailyData.DataLoadedCallback() {
+                    @Override
+                    public void onDataLoaded(DailyData data) {
+                        // Increment the dataLoadedCount
+                        dataLoadedCount++;
+                        String msg="";
+                        Log.d(msg, data.getUid());
+                        Log.d(msg, String.valueOf(data.getStepCount()));
+                        // Check if both data objects have been loaded
+                        if (dataLoadedCount == 2) {
+                            usingStepDetector_map(dailyData, currentUser);
+                        }
+                    }
+                });
+            }
+        });
+        sensorManager.registerListener(stepDetector, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(stepDetector, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    private void usingStepDetector_map(DailyData data, User user){
+        //initialize UI with daily data
+        txtStepCountBox.setText(String.valueOf(data.getStepCount()));
+        txtDistanceCountBox.setText(String.format("%.1f", data.getDistanceWalked())+"m");
+
+        stepCount = data.getStepCount();
         stepDetector.setOnStepListener(stepCount -> {
+            String msg = "";
+            Log.d(msg, "Step Detected");
             // Update UI of step count box
             txtStepCountBox.setText(String.valueOf(stepCount));
 
             // Update UI of distance count box
-            stepLength = getStepLength(50, 160, "Male");
+            stepLength = getStepLength(user.getAge(),user.getHeight(), user.getGender());
             walkedDistance = stepCount * stepLength;
-            txtDistanceCountBox.setText(String.format("%.1f", walkedDistance) + "m");
+            txtDistanceCountBox.setText(String.format("%.1f", walkedDistance)+"m");
 
             // Update UI of time count box
             elapsedTime = System.currentTimeMillis() - startTime;
@@ -129,10 +186,11 @@ public class Map extends AppCompatActivity implements LocationListener {
                     (int) (elapsedTime / 60000),
                     (int) (elapsedTime % 60000 / 1000)));
 
-            // Update UI of Task
-            initTaskCard(taskTime, getTaskDistance(50));
+            // Update daily data on Realtime Database
+            data.setStepCount(stepCount);
+            data.setDistanceWalked(walkedDistance);
+            fypDB.getDatabaseRef().child("daily_data").child(Time.getCurrentDate()).child(mAuth.getUid()).setValue(data);
         });
-
     }
 
     private void initializeMapView() {

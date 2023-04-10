@@ -9,7 +9,7 @@ admin.initializeApp({
 });
 
 exports.createDailyDataForUsers = functions.pubsub
-    .schedule("10 11 * * *")
+    .schedule("55 12 * * *")
     .onRun(async (context) => {
       try {
         // Get the current date and time
@@ -36,6 +36,9 @@ exports.createDailyDataForUsers = functions.pubsub
             distanceWalked: 0,
             finishTime: "",
             taskDone: 0,
+            taskLatitude: 0,
+            taskLongitude: 0,
+            taskRefreshed: false,
           };
           await userDailyDataRef.set(dailyData);
         });

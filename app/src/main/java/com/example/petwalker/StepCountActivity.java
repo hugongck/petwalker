@@ -17,6 +17,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 public class StepCountActivity extends AppCompatActivity{
     private TextView txtStepCountBox, txtWalkedStep, txtTimeCountBox, txtDistanceCountBox, txtTotalStep, txtSteps, txtTimeTask, txtDistanceTask;
     private StepDetector stepDetector;
@@ -145,6 +147,9 @@ public class StepCountActivity extends AppCompatActivity{
             txtTimeCountBox.setText(String.format("%d:%02d",
                     (int) (elapsedTime / 60000),
                     (int) (elapsedTime % 60000 / 1000)));
+
+            //Check Task Done
+            data.setTaskDone(BooleanUtils.toInteger(checkTimeTask()) +BooleanUtils.toInteger(checkDistanceTask())+BooleanUtils.toInteger(checkTargetTask()));
 
             // Update daily data on Realtime Database
             data.setStepCount(stepCount);
@@ -294,8 +299,8 @@ public class StepCountActivity extends AppCompatActivity{
         changeTaskCard("time", checkTimeTask());
         changeTaskCard("distance", checkDistanceTask());
         changeTaskCard("target", checkTargetTask());
-        txtTimeTask.setText(Integer.toString(taskTime)+"min");
-        txtDistanceTask.setText(Integer.toString(taskDistance)+"m");
+        txtTimeTask.setText(taskTime +"min");
+        txtDistanceTask.setText(taskDistance +"m");
     }
 
     private void changeTaskCard(String task, Boolean isTaskDone) {
@@ -353,7 +358,7 @@ public class StepCountActivity extends AppCompatActivity{
     }
 
     private Boolean checkDistanceTask() {
-        if (walkedDistance >= getTaskDistance(50)) {
+        if (walkedDistance >= getTaskDistance(currentUser.getAge())) {
             return true;
         } else {
             return false;

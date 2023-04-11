@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -53,8 +54,6 @@ public class Map extends AppCompatActivity implements LocationListener {
     private float walkedDistance = 0f;
     public double taskLat = 0.0;
     public double taskLon = 0.0;
-    private boolean targetTaskRefreshed;
-
     private MapView map;
     private LocationManager locationManager;
     private MyLocationNewOverlay locationOverlay;
@@ -62,7 +61,6 @@ public class Map extends AppCompatActivity implements LocationListener {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseDBManager fypDB = new FirebaseDBManager();
-    DatabaseReference dailyDataRef;
 
     private DailyData dailyData;
     private User currentUser;
@@ -175,6 +173,12 @@ public class Map extends AppCompatActivity implements LocationListener {
             txtTimeCountBox.setText(String.format("%d:%02d",
                     (int) (elapsedTime / 60000),
                     (int) (elapsedTime % 60000 / 1000)));
+
+            //Check Task Done
+            /**
+             * TODO: checkTargetTask()
+             * */
+            data.setTaskDone(BooleanUtils.toInteger(checkTimeTask()) +BooleanUtils.toInteger(checkDistanceTask()));
 
             // Update daily data on Realtime Database
             data.setStepCount(stepCount);
@@ -539,7 +543,7 @@ public class Map extends AppCompatActivity implements LocationListener {
     }
 
     private Boolean checkDistanceTask() {
-        if (walkedDistance >= getTaskDistance(50)) {
+        if (walkedDistance >= getTaskDistance(currentUser.getAge())) {
             return true;
         } else {
             return false;

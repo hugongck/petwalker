@@ -24,7 +24,7 @@ public class StepCountActivity extends AppCompatActivity{
     private Sensor accelerometer, gyroscope;
     private long startTime, elapsedTime;
     private float stepLength = 0.66f; // In meters, you can customize this value
-    int stepCount = 0;
+    int stepCount;
     private int taskTime = 150;
     private float walkedDistance = 0f;
 
@@ -93,25 +93,20 @@ public class StepCountActivity extends AppCompatActivity{
             public void onUserLoaded(User user) {
                 // Increment the dataLoadedCount
                 dataLoadedCount++;
-
-                // Check if both data objects have been loaded
-                //if (dataLoadedCount == 2) {
-                    //usingStepDetector(dailyData, currentUser);
-               // }
                 // Get the daily data for the current day
                 String today = Time.getCurrentDate();
-                dailyData = new DailyData(mAuth.getUid(), today, new DailyData.DataLoadedCallback() {
+                dailyData = new DailyData(user.getUid(), today, new DailyData.DataLoadedCallback() {
                     @Override
                     public void onDataLoaded(DailyData data) {
                         // Increment the dataLoadedCount
                         dataLoadedCount++;
-                        String msg="";
-                        Log.d(msg, data.getUid());
-                        Log.d(msg, String.valueOf(data.getStepCount()));
+                        String msg="dailyData Loaded:";
+                        Log.d(msg, Double.toString(data.getTaskLatitude()));
+                        Log.d(msg, Double.toString(data.getTaskLongitude()));
                         // Check if both data objects have been loaded
                         if (dataLoadedCount == 2) {
                             Log.d(msg, "Using Step Detector");
-                            usingStepDetector(data, currentUser);
+                            usingStepDetector(data, user);
                         }
                     }
                 });
@@ -129,7 +124,8 @@ public class StepCountActivity extends AppCompatActivity{
         txtDistanceCountBox.setText(String.format("%.1f", data.getDistanceWalked())+"m");
 
         stepCount = data.getStepCount();
-        stepDetector.setOnStepListener(stepCount -> {
+        stepDetector.setOnStepListener(count -> {
+            stepCount++;
             String msg = "";
             Log.d(msg, "Step Detected");
             // Update UI of step count box

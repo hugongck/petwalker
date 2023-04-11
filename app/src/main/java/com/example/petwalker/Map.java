@@ -142,7 +142,7 @@ public class Map extends AppCompatActivity implements LocationListener {
                         dataLoadedCount++;
                         // Check if both data objects have been loaded
                         if (dataLoadedCount == 2) {
-                            usingStepDetector_map(dailyData, currentUser);
+                            usingStepDetector_map(data, user);
                         }
                     }
                 });
@@ -158,7 +158,8 @@ public class Map extends AppCompatActivity implements LocationListener {
         txtDistanceCountBox.setText(String.format("%.1f", data.getDistanceWalked())+"m");
 
         stepCount = data.getStepCount();
-        stepDetector.setOnStepListener(stepCount -> {
+        stepDetector.setOnStepListener(count -> {
+            stepCount++;
             String msg = "";
             Log.d(msg, "Step Detected");
             // Update UI of step count box
@@ -178,7 +179,7 @@ public class Map extends AppCompatActivity implements LocationListener {
             // Update daily data on Realtime Database
             data.setStepCount(stepCount);
             data.setDistanceWalked(walkedDistance);
-            fypDB.getDatabaseRef().child("daily_data").child(Time.getCurrentDate()).child(mAuth.getUid()).setValue(data);
+            fypDB.getDatabaseRef().child("daily_data").child(Time.getCurrentDate()).child(user.getUid()).setValue(data);
         });
     }
 

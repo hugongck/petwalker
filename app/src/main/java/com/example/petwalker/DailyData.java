@@ -57,6 +57,9 @@ public class DailyData {
                     stepCount = dataSnapshot.child("stepCount").getValue(Integer.class);
                     taskDone = dataSnapshot.child("taskDone").getValue(Integer.class);
                     uid = dataSnapshot.child("uid").getValue(String.class);
+                    taskRefreshed = dataSnapshot.child("taskRefreshed").getValue(Boolean.class);
+                    taskLatitude = dataSnapshot.child("taskLatitude").getValue(Double.class);
+                    taskLongitude = dataSnapshot.child("taskLongitude").getValue(Double.class);
 
                     if (callback != null) {
                         callback.onDataLoaded(DailyData.this);

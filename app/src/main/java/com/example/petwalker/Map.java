@@ -53,7 +53,7 @@ public class Map extends AppCompatActivity implements LocationListener {
     private float walkedDistance = 0f;
     public double taskLat = 0.0;
     public double taskLon = 0.0;
-    private boolean targetTaskRefreshed = true;
+    private boolean targetTaskRefreshed;
 
     private MapView map;
     private LocationManager locationManager;
@@ -62,6 +62,7 @@ public class Map extends AppCompatActivity implements LocationListener {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseDBManager fypDB = new FirebaseDBManager();
+    DatabaseReference dailyDataRef;
 
     private DailyData dailyData;
     private User currentUser;
@@ -133,24 +134,12 @@ public class Map extends AppCompatActivity implements LocationListener {
             public void onUserLoaded(User user) {
                 // Increment the dataLoadedCount
                 dataLoadedCount++;
-
-                // Check if both data objects have been loaded
-                //if (dataLoadedCount == 2) {
-                //usingStepDetector(dailyData, currentUser);
-                // }
-                // Get the daily data for the current day
                 String today = Time.getCurrentDate();
-                String msg="";
-                Log.d(msg, today);
-                Log.d(msg, mAuth.getUid());
                 dailyData = new DailyData(mAuth.getUid(), today, new DailyData.DataLoadedCallback() {
                     @Override
                     public void onDataLoaded(DailyData data) {
                         // Increment the dataLoadedCount
                         dataLoadedCount++;
-                        String msg="";
-                        Log.d(msg, data.getUid());
-                        Log.d(msg, String.valueOf(data.getStepCount()));
                         // Check if both data objects have been loaded
                         if (dataLoadedCount == 2) {
                             usingStepDetector_map(dailyData, currentUser);
@@ -224,27 +213,17 @@ public class Map extends AppCompatActivity implements LocationListener {
                     GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                     map.getController().animateTo(startPoint);
 
-                    /**
-                     * TODO: get from database
-                     * */
-                    targetTaskRefreshed = false; //change get from database
-                    if (!targetTaskRefreshed) {/*
-                        double latOffset = getRandomOffset(0.003);
-                        double lonOffset = getRandomOffset(0.003);
-                        taskLat = location.getLatitude() + latOffset; // update to database
-                        taskLon = location.getLongitude() + lonOffset; // update to database*/
+                    if (!dailyData.isTaskRefreshed()) {
+                        String msg = "GG: ";
+                        Log.d(msg, "Task Refreshing...");
                         getTaskGeo();
-
-                        targetTaskRefreshed = true; // update to database
-                        /**
-                         *  TODO: update to database
-                         *  */
+                        dailyData.setTaskLatitude(taskLat);
+                        dailyData.setTaskLongitude(taskLon);
+                        dailyData.setTaskRefreshed(true);
+                        fypDB.getDatabaseRef().child("daily_data").child(Time.getCurrentDate()).child(mAuth.getUid()).setValue(dailyData);
                     }
-                    /**
-                     * TODO: change targetTaskRefreshed to false every day midnight in database
-                     * */
 
-                    GeoPoint endPoint = new GeoPoint(taskLat, taskLon);
+                    GeoPoint endPoint = new GeoPoint(dailyData.getTaskLatitude(), dailyData.getTaskLongitude());
                     Marker destinationMarker = new Marker(map);
 
                     destinationMarker.setPosition(endPoint);
@@ -293,6 +272,11 @@ public class Map extends AppCompatActivity implements LocationListener {
     }
 
     public void getTaskGeo() {
+        /*double latOffset = getRandomOffset(0.003);
+        double lonOffset = getRandomOffset(0.003);
+        taskLat = location.getLatitude() + latOffset;
+        taskLon = location.getLongitude() + lonOffset;*/
+
         // Generate a random number
         Random random = new Random();
         int randomInt = random.nextInt(4);

@@ -100,9 +100,6 @@ public class StepCountActivity extends AppCompatActivity{
                // }
                 // Get the daily data for the current day
                 String today = Time.getCurrentDate();
-                String msg="";
-                Log.d(msg, today);
-                Log.d(msg, mAuth.getUid());
                 dailyData = new DailyData(mAuth.getUid(), today, new DailyData.DataLoadedCallback() {
                     @Override
                     public void onDataLoaded(DailyData data) {
@@ -114,7 +111,7 @@ public class StepCountActivity extends AppCompatActivity{
                         // Check if both data objects have been loaded
                         if (dataLoadedCount == 2) {
                             Log.d(msg, "Using Step Detector");
-                            usingStepDetector(dailyData, currentUser);
+                            usingStepDetector(data, currentUser);
                         }
                     }
                 });

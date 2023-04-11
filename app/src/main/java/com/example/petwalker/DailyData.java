@@ -11,6 +11,7 @@ public class DailyData {
     private double distanceWalked;
     private double taskLatitude;
     private double taskLongitude;
+    private boolean taskRefreshed;
     private String finishTime;
     private int stepCount;
     private int taskDone;
@@ -108,6 +109,30 @@ public class DailyData {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public double getTaskLatitude() {
+        return taskLatitude;
+    }
+
+    public void setTaskLatitude(double taskLatitude) {
+        this.taskLatitude = taskLatitude;
+    }
+
+    public double getTaskLongitude() {
+        return taskLongitude;
+    }
+
+    public void setTaskLongitude(double taskLongitude) {
+        this.taskLongitude = taskLongitude;
+    }
+
+    public boolean isTaskRefreshed() {
+        return taskRefreshed;
+    }
+
+    public void setTaskRefreshed(boolean taskRefreshed) {
+        this.taskRefreshed = taskRefreshed;
     }
 }
 

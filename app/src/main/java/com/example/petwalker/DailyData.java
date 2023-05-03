@@ -13,6 +13,7 @@ public class DailyData {
     private double taskLongitude;
     private boolean taskRefreshed;
     private String finishTime;
+    private long startTime;
     private int stepCount;
     private int taskDone;
     private String uid;
@@ -28,6 +29,7 @@ public class DailyData {
     public DailyData(){
         distanceWalked = 0.0;
         finishTime = "";
+        startTime = 0;
         stepCount = 0;
         taskDone = 0;
         taskLatitude = 0.0;
@@ -35,9 +37,10 @@ public class DailyData {
         uid = "na";
     }
 
-    public DailyData(double distanceWalked, String finishTime, int stepCount, int taskDone, double taskLatitude, double taskLongitude, String uid) {
+    public DailyData(double distanceWalked, String finishTime, long startTime, int stepCount, int taskDone, double taskLatitude, double taskLongitude, String uid) {
         this.distanceWalked = distanceWalked;
         this.finishTime = finishTime;
+        this.startTime = startTime;
         this.stepCount = stepCount;
         this.taskDone = taskDone;
         this.taskLatitude = taskLatitude;
@@ -54,6 +57,7 @@ public class DailyData {
                 if (dataSnapshot.exists()) {
                     distanceWalked = dataSnapshot.child("distanceWalked").getValue(Double.class);
                     finishTime = dataSnapshot.child("finishTime").getValue(String.class);
+                    startTime = dataSnapshot.child("startTime").getValue(Long.class);
                     stepCount = dataSnapshot.child("stepCount").getValue(Integer.class);
                     taskDone = dataSnapshot.child("taskDone").getValue(Integer.class);
                     uid = dataSnapshot.child("uid").getValue(String.class);
@@ -88,6 +92,14 @@ public class DailyData {
 
     public void setFinishTime(String finishTime) {
         this.finishTime = finishTime;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
     }
 
     public int getStepCount() {

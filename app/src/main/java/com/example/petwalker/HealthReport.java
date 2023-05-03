@@ -40,8 +40,10 @@ public class HealthReport extends AppCompatActivity {
     private DatabaseReference databaseRef = fypDB.getDatabaseRef();
     private DatabaseReference currentUserRef;
     private String currentPage = "Daily";
+    private User currentUser;
+    private DailyData dailyData;
+    private int dataLoadedCount = 0;
 
-    private User currentUserData = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,115 +53,118 @@ public class HealthReport extends AppCompatActivity {
         //Retrieve user data from database
         String uid = mAuth.getCurrentUser().getUid();
         currentUserRef = databaseRef.child("users").child(uid);
-        currentUserRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get the user data from the snapshot
-                User currentUserData = dataSnapshot.getValue(User.class);
-
-                // Use the retrieved values as needed
-                // ...
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Handle errors
-                String TAG = "TAG: ";
-                Log.e(TAG, "Database error: " + databaseError.getMessage());
-                Toast.makeText(getApplicationContext(), "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
 
         // Hide the status bar.
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
 
-        // Back button
-        Button btn_back = findViewById(R.id.btn_back);
-        btn_back.setOnClickListener(new View.OnClickListener() {
+        // Get the current user
+        currentUser = new User(mAuth.getUid(), new User.UserLoadedCallback() {
             @Override
-            public void onClick(View view) {
-                finish();
+            public void onUserLoaded(User user) {
+                // Increment the dataLoadedCount
+                dataLoadedCount++;
+                // Get the daily data for the current day
+                String today = Time.getCurrentDate();
+                dailyData = new DailyData(user.getUid(), today, new DailyData.DataLoadedCallback() {
+                    @Override
+                    public void onDataLoaded(DailyData data) {
+                        // Increment the dataLoadedCount
+                        dataLoadedCount++;
+                        String msg="dailyData Loaded:";
+                        Log.d(msg, Double.toString(data.getTaskLatitude()));
+                        Log.d(msg, Double.toString(data.getTaskLongitude()));
+                        // Check if both data objects have been loaded
+                        if (dataLoadedCount == 2) {
+                            // Back button
+                            Button btn_back = findViewById(R.id.btn_back);
+                            btn_back.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    finish();
+                                }
+                            });
+
+                            // Help button
+                            Button btn_help = findViewById(R.id.btn_help);
+                            btn_help.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(HealthReport.this, Help.class);
+                                    startActivity(intent);
+                                }
+                            });
+
+                            // button
+                            Button btn_daily = findViewById(R.id.btn_daily);
+                            Button btn_weekly = findViewById(R.id.btn_weekly);
+                            Button btn_monthly = findViewById(R.id.btn_monthly);
+
+                            btn_daily.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    currentPage = "Daily";
+                                    // Change background of button when it's pressed
+                                    btn_daily.setBackgroundResource(R.drawable.color_box);
+                                    // Reset background of other buttons
+                                    btn_weekly.setBackgroundResource(R.drawable.box);
+                                    btn_monthly.setBackgroundResource(R.drawable.box);
+
+                                    setText(currentPage, dailyData);
+                                    changeAlert(currentPage);
+                                    BarChart barChart = findViewById(R.id.barChart);
+                                    setupBarChart(barChart, currentPage);
+                                }
+                            });
+
+                            btn_weekly.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    currentPage = "Weekly";
+                                    // Change background of button when it's pressed
+                                    btn_weekly.setBackgroundResource(R.drawable.color_box);
+
+                                    // Reset background of other buttons
+                                    btn_daily.setBackgroundResource(R.drawable.box);
+                                    btn_monthly.setBackgroundResource(R.drawable.box);
+
+                                    setText(currentPage, dailyData);
+                                    changeAlert(currentPage);
+                                    BarChart barChart = findViewById(R.id.barChart);
+                                    setupBarChart(barChart, currentPage);
+                                }
+                            });
+
+                            btn_monthly.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    currentPage = "Monthly";
+                                    // Change background of button when it's pressed
+                                    btn_monthly.setBackgroundResource(R.drawable.color_box);
+
+                                    // Reset background of other buttons
+                                    btn_daily.setBackgroundResource(R.drawable.box);
+                                    btn_weekly.setBackgroundResource(R.drawable.box);
+
+                                    setText(currentPage, dailyData);
+                                    changeAlert(currentPage);
+                                    BarChart barChart = findViewById(R.id.barChart);
+                                    setupBarChart(barChart, currentPage);
+                                }
+                            });
+
+                            changeAlert(currentPage);
+
+                            setText(currentPage, dailyData);
+
+                            BarChart barChart = findViewById(R.id.barChart);
+                            setupBarChart(barChart, currentPage);
+                        }
+                    }
+                });
             }
         });
-
-        // Help button
-        Button btn_help = findViewById(R.id.btn_help);
-        btn_help.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HealthReport.this, Help.class);
-                startActivity(intent);
-            }
-        });
-
-        // button
-        Button btn_daily = findViewById(R.id.btn_daily);
-        Button btn_weekly = findViewById(R.id.btn_weekly);
-        Button btn_monthly = findViewById(R.id.btn_monthly);
-
-        btn_daily.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPage = "Daily";
-                // Change background of button when it's pressed
-                btn_daily.setBackgroundResource(R.drawable.color_box);
-                // Reset background of other buttons
-                btn_weekly.setBackgroundResource(R.drawable.box);
-                btn_monthly.setBackgroundResource(R.drawable.box);
-
-                setText(currentPage);
-                changeAlert(currentPage);
-                BarChart barChart = findViewById(R.id.barChart);
-                setupBarChart(barChart, currentPage);
-            }
-        });
-
-        btn_weekly.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPage = "Weekly";
-                // Change background of button when it's pressed
-                btn_weekly.setBackgroundResource(R.drawable.color_box);
-
-                // Reset background of other buttons
-                btn_daily.setBackgroundResource(R.drawable.box);
-                btn_monthly.setBackgroundResource(R.drawable.box);
-
-                setText(currentPage);
-                changeAlert(currentPage);
-                BarChart barChart = findViewById(R.id.barChart);
-                setupBarChart(barChart, currentPage);
-            }
-        });
-
-        btn_monthly.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPage = "Monthly";
-                // Change background of button when it's pressed
-                btn_monthly.setBackgroundResource(R.drawable.color_box);
-
-                // Reset background of other buttons
-                btn_daily.setBackgroundResource(R.drawable.box);
-                btn_weekly.setBackgroundResource(R.drawable.box);
-
-                setText(currentPage);
-                changeAlert(currentPage);
-                BarChart barChart = findViewById(R.id.barChart);
-                setupBarChart(barChart, currentPage);
-            }
-        });
-
-        changeAlert(currentPage);
-
-        setText(currentPage);
-
-        BarChart barChart = findViewById(R.id.barChart);
-        setupBarChart(barChart, currentPage);
-
     }
 
     private void changeAlert(String currentPage) {
@@ -304,7 +309,7 @@ public class HealthReport extends AppCompatActivity {
         barChart.invalidate(); // Refresh the chart
     }
 
-    private void setText(String currentPage) {
+    private void setText(String currentPage, DailyData data) {
 
         txt_step = findViewById(R.id.txt_step);
         txt_distance = findViewById(R.id.txt_distance);
@@ -348,8 +353,8 @@ public class HealthReport extends AppCompatActivity {
         int stepCount = 0;
         int duration = 0;
         if (currentPage.equals("Daily")) {
-            stepCount = 3000 * numberOfDay; // total steps
-            duration = 5500 * numberOfDay; // in second
+            stepCount = data.getStepCount(); // total steps
+            duration = (int)((System.currentTimeMillis() - data.getStartTime()) / 1000); // in second
         } else if (currentPage.equals("Weekly")) {
             stepCount = 9000 * numberOfDay; // total steps
             duration = 5000 * numberOfDay; // in second
@@ -359,7 +364,7 @@ public class HealthReport extends AppCompatActivity {
         }
         /*******************************************************/
 
-        float distance = stepCount * getStepLength(50, 160, "Male");
+        float distance = stepCount * getStepLength(currentUser.getAge(), currentUser.getHeight(), currentUser.getGender());
         float energy = stepCount * 0.04f;
         float speed = distance / duration;
 

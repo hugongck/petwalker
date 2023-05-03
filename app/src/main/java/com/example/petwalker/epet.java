@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.unity3d.player.UnityPlayer;
+import com.unity3d.player.UnityPlayerActivity;
 
 public class epet extends AppCompatActivity {
 
@@ -104,6 +107,7 @@ public class epet extends AppCompatActivity {
 
         // Help button
         Button btn_help = findViewById(R.id.btn_help);
+
         btn_help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,6 +115,19 @@ public class epet extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // AR button
+        ImageButton btn_AR = findViewById(R.id.ar_pet_btn);
+
+        btn_AR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent unityIntent = new Intent(epet.this, UnityPlayerActivity.class);
+
+                startActivity(unityIntent);
+            }
+        });
+
 
         //step count
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);

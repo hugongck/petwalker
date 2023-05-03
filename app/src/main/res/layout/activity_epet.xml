@@ -74,7 +74,7 @@
             app:layout_constraintTop_toBottomOf="@+id/epet_talk"
             app:srcCompat="@drawable/ar_epet_img" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/ar_pet_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,7 +82,8 @@
             app:layout_constraintBottom_toTopOf="@+id/textView1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ar_camera_btn" />
+            android:src="@drawable/ar_camera_btn"
+            android:background="@null" />
 
         <TextView
             android:id="@+id/textView1"

@@ -48,6 +48,7 @@ public class Map extends AppCompatActivity implements LocationListener {
     private SensorManager sensorManager;
     private Sensor accelerometer, gyroscope;
     private long startTime, elapsedTime;
+    private String elapsedTimeStr;
     private float stepLength = 0.66f; // In meters, you can customize this value
     private int taskTime = 150;
     int stepCount = 0;
@@ -154,7 +155,13 @@ public class Map extends AppCompatActivity implements LocationListener {
         //initialize UI with daily data
         txtStepCountBox.setText(String.valueOf(data.getStepCount()));
         txtDistanceCountBox.setText(String.format("%.1f", data.getDistanceWalked())+"m");
+        txtTimeCountBox.setText(data.getFinishTime());
 
+        startTime = data.getStartTime();
+        if (startTime == 0) {
+            startTime = System.currentTimeMillis();
+            fypDB.getDatabaseRef().child("daily_data").child(Time.getCurrentDate()).child(user.getUid()).child("startTime").setValue(startTime);
+        }
         stepCount = data.getStepCount();
         stepDetector.setOnStepListener(count -> {
             stepCount++;
@@ -170,9 +177,10 @@ public class Map extends AppCompatActivity implements LocationListener {
 
             // Update UI of time count box
             elapsedTime = System.currentTimeMillis() - startTime;
-            txtTimeCountBox.setText(String.format("%d:%02d",
+            elapsedTimeStr = String.format("%d:%02d",
                     (int) (elapsedTime / 60000),
-                    (int) (elapsedTime % 60000 / 1000)));
+                    (int) (elapsedTime % 60000 / 1000));
+            txtTimeCountBox.setText(elapsedTimeStr);
 
             //Check Task Done
             /**
@@ -183,6 +191,7 @@ public class Map extends AppCompatActivity implements LocationListener {
             // Update daily data on Realtime Database
             data.setStepCount(stepCount);
             data.setDistanceWalked(walkedDistance);
+            data.setFinishTime(elapsedTimeStr);
             fypDB.getDatabaseRef().child("daily_data").child(Time.getCurrentDate()).child(user.getUid()).setValue(data);
         });
     }
@@ -386,10 +395,6 @@ public class Map extends AppCompatActivity implements LocationListener {
         }
         sensorManager.registerListener(stepDetector, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(stepDetector, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
-
-        if (startTime == 0) {
-            startTime = System.currentTimeMillis();
-        }
     }
 
     @Override
@@ -556,9 +561,6 @@ public class Map extends AppCompatActivity implements LocationListener {
                 targetPoint.getLatitude(), targetPoint.getLongitude(), results);
         float distanceInMeters = results[0];
         return distanceInMeters <= 200; // in meter
-        /**
-         * Update to database (isTargetTaskDone)
-         * */
     }
 
 

@@ -25,6 +25,7 @@ public class StepCountActivity extends AppCompatActivity{
     private SensorManager sensorManager;
     private Sensor accelerometer, gyroscope;
     private long startTime, elapsedTime;
+    private String elapsedTimeStr;
     private float stepLength = 0.66f; // In meters, you can customize this value
     int stepCount;
     private int taskTime = 150;
@@ -124,7 +125,13 @@ public class StepCountActivity extends AppCompatActivity{
         txtWalkedStep.setText(String.valueOf(data.getStepCount()));
         updateProgressBar(data.getStepCount(),getTaskStep(user.getAge()));
         txtDistanceCountBox.setText(String.format("%.1f", data.getDistanceWalked())+"m");
+        txtTimeCountBox.setText(data.getFinishTime());
 
+        startTime = data.getStartTime();
+        if (startTime == 0) {
+            startTime = System.currentTimeMillis();
+            fypDB.getDatabaseRef().child("daily_data").child(Time.getCurrentDate()).child(user.getUid()).child("startTime").setValue(startTime);
+        }
         stepCount = data.getStepCount();
         stepDetector.setOnStepListener(count -> {
             stepCount++;
@@ -144,9 +151,10 @@ public class StepCountActivity extends AppCompatActivity{
 
             // Update UI of time count box
             elapsedTime = System.currentTimeMillis() - startTime;
-            txtTimeCountBox.setText(String.format("%d:%02d",
+            elapsedTimeStr = String.format("%d:%02d",
                     (int) (elapsedTime / 60000),
-                    (int) (elapsedTime % 60000 / 1000)));
+                    (int) (elapsedTime % 60000 / 1000));
+            txtTimeCountBox.setText(elapsedTimeStr);
 
             //Check Task Done
             data.setTaskDone(BooleanUtils.toInteger(checkTimeTask()) +BooleanUtils.toInteger(checkDistanceTask())+BooleanUtils.toInteger(checkTargetTask()));
@@ -154,6 +162,7 @@ public class StepCountActivity extends AppCompatActivity{
             // Update daily data on Realtime Database
             data.setStepCount(stepCount);
             data.setDistanceWalked(walkedDistance);
+            data.setFinishTime(elapsedTimeStr);
             fypDB.getDatabaseRef().child("daily_data").child(Time.getCurrentDate()).child(mAuth.getUid()).setValue(data);
 
 

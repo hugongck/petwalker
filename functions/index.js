@@ -9,7 +9,7 @@ admin.initializeApp({
 });
 
 exports.createDailyDataForUsers = functions.pubsub
-    .schedule("55 12 * * *")
+    .schedule("00 9 * * *")
     .onRun(async (context) => {
       try {
         // Get the current date and time
@@ -35,6 +35,7 @@ exports.createDailyDataForUsers = functions.pubsub
             stepCount: 0,
             distanceWalked: 0,
             finishTime: "",
+            startTime: 0,
             taskDone: 0,
             taskLatitude: 0,
             taskLongitude: 0,
